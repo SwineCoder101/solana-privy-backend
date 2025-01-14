@@ -1,0 +1,270 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_URL?schema=shadow_schema")
+}
+
+model User {
+  id                    Int               @id @default(sequence())
+  telegramId            BigInt               @unique
+  walletAddress         String?
+  username              String?
+  photoUrl              String?
+  lastName              String?
+  firstName             String
+  isBot                 Boolean?
+  isPremium             Boolean?
+  inviteLink            String?           @unique
+  inviteLinkUsageCount  Int               @default(0)
+  languageCode          String?
+  allowsWriteToPm       Boolean?
+  addedToAttachmentMenu Boolean?
+  userType              UserType          @default(FREELANCER)
+  description           String?           @default("")
+  freelancerRoleTypes   Json?
+  age                   Int
+  storyLink             String?
+  storyLinkCounter      Int               @default(0)
+  lastOnline            DateTime          @default(now())
+  isOnline              Boolean           @default(false)
+  averageRating         Float?
+  totalRatings          Int               @default(0)
+  rank                  Int               @default(0)
+  rankPoints            Int               @default(0)
+  isPatientZero         Boolean           @default(false)
+  createdAt             DateTime          @default(now())
+  isOnboarded           Boolean           @default(false)
+  connectionPrivacy     ConnectionPrivacy @default(PUBLIC)
+
+  jobsPosted          Job[]               @relation("JobPoster")
+  offersSubmitted     Offer[]             @relation("OfferSubmitter")
+  conversations       Conversation[]
+  referralsMade       Referral[]          @relation("Referrer")
+  referralReceived    Referral?           @relation("ReferredUser")
+  recentSearches      RecentSearch[]
+  sentMessages        Message[]
+  sentConnections     Connection[]        @relation("Sender")
+  receivedConnections Connection[]        @relation("Receiver")
+  connectionRequests  ConnectionRequest[] @relation("RequestReceiver")
+  sentRequests        ConnectionRequest[] @relation("RequestSender")
+
+  followings Follow[] @relation("Follower")
+  followers  Follow[] @relation("Followed")
+
+  @@map("users")
+}
+
+model Follow {
+  id         Int      @id @default(sequence())
+  follower   User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId Int
+  followed   User     @relation("Followed", fields: [followedId], references: [id], onDelete: Cascade)
+  followedId Int
+  createdAt  DateTime @default(now())
+
+  @@unique([followerId, followedId])
+  @@map("follows")
+}
+
+model ConnectionRequest {
+  id         Int           @id @default(sequence())
+  sender     User          @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   Int
+  receiver   User          @relation("RequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId Int
+  status     RequestStatus @default(PENDING)
+  message    String?       @default("")
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now()) @updatedAt
+
+  @@unique([senderId, receiverId])
+  @@map("connection_requests")
+}
+
+model Connection {
+  id        Int      @id @default(sequence())
+  user1     User     @relation("Sender", fields: [user1Id], references: [id], onDelete: Cascade)
+  user1Id   Int
+  user2     User     @relation("Receiver", fields: [user2Id], references: [id], onDelete: Cascade)
+  user2Id   Int
+  createdAt DateTime @default(now())
+
+  @@unique([user1Id, user2Id])
+  @@map("connections")
+}
+
+model Referral {
+  id                     Int      @id @default(sequence())
+  referrer               User     @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referrerId             Int
+  referredUser           User     @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
+  referredUserId         Int      @unique
+  referralDate           DateTime @default(now())
+  referrerRankAtReferral Int      @default(0)
+
+  @@map("referrals")
+}
+
+model RecentSearch {
+  id        Int      @id @default(sequence())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  query     String
+  createdAt DateTime @default(now())
+
+  @@map("recent_searches")
+}
+
+model Job {
+  id          Int        @id @default(sequence())
+  title       String
+  description String
+  budgetMin   Float
+  budgetMax   Float
+  currency    String     @default("TON")
+  status      JobStatus  @default(OPEN)
+  poster      User       @relation("JobPoster", fields: [posterId], references: [id])
+  posterId    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  categories  Category[] @relation("JobCategories")
+
+  offers              Offer[]
+  conversations       Conversation[]
+  arbitratorAddresses String[]
+  acceptedOfferId     Int?           @unique
+  acceptedOffer       Offer?         @relation("AcceptedOffer", fields: [acceptedOfferId], references: [id])
+
+  @@map("jobs")
+}
+
+model Category {
+  id   Int    @id @default(sequence())
+  name String @unique
+
+  jobs Job[] @relation("JobCategories")
+}
+
+model Offer {
+  id           Int         @id @default(sequence())
+  amount       Float
+  currency     String      @default("TON")
+  status       OfferStatus @default(PENDING)
+  description  String?
+  freelancer   User        @relation("OfferSubmitter", fields: [freelancerId], references: [id])
+  freelancerId Int
+  job          Job         @relation(fields: [jobId], references: [id])
+  jobId        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  acceptedAt   DateTime?
+  rejectedAt   DateTime?
+
+  escrowContract EscrowContract?
+  acceptedForJob Job?            @relation("AcceptedOffer")
+
+  @@map("offers")
+}
+
+model Conversation {
+  id           Int                @id @default(sequence())
+  status       ConversationStatus @default(ACTIVE)
+  groupId      Int                @unique
+  job          Job                @relation(fields: [jobId], references: [id])
+  jobId        Int
+  participants User[]
+  botId        Int
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  messages Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             Int          @id @default(sequence())
+  content        String
+  senderId       Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  createdAt      DateTime     @default(now())
+  sender         User         @relation(fields: [senderId], references: [id])
+
+  @@map("messages")
+}
+
+model EscrowContract {
+  id              Int          @id @default(sequence())
+  contractAddress String       @unique
+  offer           Offer        @relation(fields: [offerId], references: [id])
+  offerId         Int          @unique
+  amount          Float
+  currency        String       @default("TON")
+  status          EscrowStatus @default(CREATED)
+  feePercentage   Float
+  dealDuration    Int
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  fundedAt        DateTime?
+  workCompletedAt DateTime?
+  buyerApprovedAt DateTime?
+  disputedAt      DateTime?
+  releasedAt      DateTime?
+  cancelledAt     DateTime?
+
+  @@map("escrow_contracts")
+}
+
+enum UserType {
+  FREELANCER
+  CLIENT
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum EscrowStatus {
+  CREATED
+  FUNDED
+  WORK_COMPLETED
+  BUYER_APPROVED
+  DISPUTED
+  RELEASED
+  CANCELLED
+  FEES_CLAIMED
+  ARBITRATED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+}
+
+enum ConnectionPrivacy {
+  PUBLIC
+  MUTUAL
+  PRIVATE
+}
