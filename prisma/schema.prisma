@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
   shadowDatabaseUrl = env("DATABASE_URL?schema=shadow_schema")
 }
