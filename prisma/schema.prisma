@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id                    Int               @id @default(sequence())
+  id                    Int               @id @default(autoincrement())
   telegramId            BigInt               @unique
   walletAddress         String?
   username              String?
@@ -59,7 +59,7 @@ model User {
 }
 
 model Follow {
-  id         Int      @id @default(sequence())
+  id         Int      @id @default(autoincrement())
   follower   User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
   followerId Int
   followed   User     @relation("Followed", fields: [followedId], references: [id], onDelete: Cascade)
@@ -71,7 +71,7 @@ model Follow {
 }
 
 model ConnectionRequest {
-  id         Int           @id @default(sequence())
+  id         Int           @id @default(autoincrement())
   sender     User          @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
   senderId   Int
   receiver   User          @relation("RequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
@@ -86,7 +86,7 @@ model ConnectionRequest {
 }
 
 model Connection {
-  id        Int      @id @default(sequence())
+  id        Int      @id @default(autoincrement())
   user1     User     @relation("Sender", fields: [user1Id], references: [id], onDelete: Cascade)
   user1Id   Int
   user2     User     @relation("Receiver", fields: [user2Id], references: [id], onDelete: Cascade)
@@ -98,7 +98,7 @@ model Connection {
 }
 
 model Referral {
-  id                     Int      @id @default(sequence())
+  id                     Int      @id @default(autoincrement())
   referrer               User     @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
   referrerId             Int
   referredUser           User     @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
@@ -110,7 +110,7 @@ model Referral {
 }
 
 model RecentSearch {
-  id        Int      @id @default(sequence())
+  id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   query     String
@@ -120,7 +120,7 @@ model RecentSearch {
 }
 
 model Job {
-  id          Int        @id @default(sequence())
+  id          Int        @id @default(autoincrement())
   title       String
   description String
   budgetMin   Float
@@ -143,14 +143,14 @@ model Job {
 }
 
 model Category {
-  id   Int    @id @default(sequence())
+  id   Int    @id @default(autoincrement())
   name String @unique
 
   jobs Job[] @relation("JobCategories")
 }
 
 model Offer {
-  id           Int         @id @default(sequence())
+  id           Int         @id @default(autoincrement())
   amount       Float
   currency     String      @default("TON")
   status       OfferStatus @default(PENDING)
@@ -171,7 +171,7 @@ model Offer {
 }
 
 model Conversation {
-  id           Int                @id @default(sequence())
+  id           Int                @id @default(autoincrement())
   status       ConversationStatus @default(ACTIVE)
   groupId      Int                @unique
   job          Job                @relation(fields: [jobId], references: [id])
@@ -187,7 +187,7 @@ model Conversation {
 }
 
 model Message {
-  id             Int          @id @default(sequence())
+  id             Int          @id @default(autoincrement())
   content        String
   senderId       Int
   conversation   Conversation @relation(fields: [conversationId], references: [id])
@@ -199,7 +199,7 @@ model Message {
 }
 
 model EscrowContract {
-  id              Int          @id @default(sequence())
+  id              Int          @id @default(autoincrement())
   contractAddress String       @unique
   offer           Offer        @relation(fields: [offerId], references: [id])
   offerId         Int          @unique
