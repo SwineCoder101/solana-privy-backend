@@ -8,7 +8,6 @@ import { StickerModule } from './sticker/sticker.module';
 import { SearchModule } from './search/search.module';
 import { ReferralModule } from './referral/referral.module';
 import { PrismaService } from './prisma.service';
-import { EscrowModule } from './escrow/escrow.module';
 import { JobsModule } from './jobs/jobs.module';
 import { S3Module } from './s3/s3.module';
 import { S3Service } from './s3/s3.service';
@@ -28,7 +27,6 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     SearchModule,
     ReferralModule,
-    EscrowModule,
     JobsModule,
     S3Module,
     RankModule,
