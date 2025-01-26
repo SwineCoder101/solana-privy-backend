@@ -1,4 +1,4 @@
-FROM node:20-alpine AS BUILD
+FROM node:20-alpine AS build
 RUN apk add --no-cache openssl git
 WORKDIR /usr/src/app
 COPY . .
@@ -12,9 +12,9 @@ RUN npm run build
 RUN apk add --no-cache openssl
 WORKDIR /usr/src/app
 ENV NPM_CONFIG_IGNORE_SCRIPTS=true
-COPY --from=BUILD /usr/src/app/dist ./dist
-COPY --from=BUILD /usr/src/app/package.json ./package.json
-COPY --from=BUILD /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/package.json ./package.json
+COPY --from=build /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 COPY prisma ./prisma
 
 
