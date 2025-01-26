@@ -14,7 +14,7 @@ import { RankService } from 'src/rank/rank.service';
 import { UpdateConnectionRequestDto } from './dto/update-connection-request.dto';
 import { SendConnectionRequestDto } from './dto/send-connection-request.dto';
 import { GoogleCloudStorageService } from 'src/google-cloud-storage/google-cloud-storage.service';
-
+import { UserGateway } from './user.gateway';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -25,6 +25,7 @@ export class UserService {
     // private s3Service: S3Service,
     private rankService: RankService,
     private gcloudService: GoogleCloudStorageService,
+    private userGateway: UserGateway,
   ) { }
 
   async onModuleInit() {
@@ -81,7 +82,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-
+          this.userGateway.broadcastNewUser(newUser);
           return newUser;
         },
         { timeout: 10000 },
@@ -620,6 +621,40 @@ export class UserService {
       this.logger.error(`Error fetching top ranked users: ${error.message}`);
       throw error;
     }
+  }
+
+  async findTopReferrer() {
+    
+    const result = await this.prisma.referral.groupBy({
+      by: ['referrerId'],
+      _count: {
+        referrerId: true,
+      },
+      orderBy: {
+        _count: {
+          referrerId: 'desc',
+        },
+      },
+      take: 1,
+    });
+
+    if (!result || result.length === 0) {
+      return null;
+    }
+
+    const [topReferrerRecord] = result;
+  
+    const topReferrer = await this.prisma.user.findUnique({
+      where: {
+        id: topReferrerRecord.referrerId,
+      },
+    });
+  
+    if (!topReferrer) {
+      return null;
+    }
+  
+    return { topReferrer, inviteCount: topReferrerRecord._count.referrerId };
   }
 
 }

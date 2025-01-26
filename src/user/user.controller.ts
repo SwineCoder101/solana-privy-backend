@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -387,5 +388,24 @@ async isFollowing(
     return badRequest({ message: error.message });
   }
 }
+
+@Get('top-referrer')
+  @ApiOperation({ summary: 'Get the user with the highest number of referrals' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the top referrer user and their invite count',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No top referrer found or no referrals exist',
+  })
+  async getTopReferrer() {
+    const data = await this.userService.findTopReferrer();
+    if (!data) {
+      // If no top referrer is found, throw a 404
+      throw new NotFoundException('No top referrer found');
+    }
+    return data;
+  }
 
 }
