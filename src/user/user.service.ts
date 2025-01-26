@@ -623,9 +623,31 @@ export class UserService {
     }
   }
 
-  async findTopReferrer() {
-    
-    const result = await this.prisma.referral.groupBy({
+  async getReferralsLeaderboard(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    // 1) Get total number of *unique* referrers (for total pages)
+    //    Because groupBy(referrerId) returns an array of distinct referrers, the length = total distinct referrer IDs
+    const allReferrers = await this.prisma.referral.groupBy({
+      by: ['referrerId'],
+    });
+    const totalCount = allReferrers.length;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    if (totalCount === 0) {
+
+      return {
+        data: [],
+        meta: {
+          totalCount,
+          currentPage: page,
+          totalPages,
+        },
+      };
+    }
+
+
+    const groupedReferrals = await this.prisma.referral.groupBy({
       by: ['referrerId'],
       _count: {
         referrerId: true,
@@ -635,26 +657,34 @@ export class UserService {
           referrerId: 'desc',
         },
       },
-      take: 1,
+      skip,
+      take: limit,
     });
 
-    if (!result || result.length === 0) {
-      return null;
-    }
 
-    const [topReferrerRecord] = result;
-  
-    const topReferrer = await this.prisma.user.findUnique({
-      where: {
-        id: topReferrerRecord.referrerId,
+    const referrerIds = groupedReferrals.map((r) => r.referrerId);
+    const referrers = await this.prisma.user.findMany({
+      where: { id: { in: referrerIds } },
+    });
+
+
+    const userMap = new Map<number, User>();
+    referrers.forEach((u) => userMap.set(u.id, u));
+
+
+    const data = groupedReferrals.map((item) => ({
+      user: userMap.get(item.referrerId),
+      inviteCount: item._count.referrerId,
+    }));
+
+    return {
+      data,
+      meta: {
+        totalCount,
+        currentPage: page,
+        totalPages,
       },
-    });
-  
-    if (!topReferrer) {
-      return null;
-    }
-  
-    return { topReferrer, inviteCount: topReferrerRecord._count.referrerId };
+    };
   }
 
 }

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -389,23 +390,16 @@ async isFollowing(
   }
 }
 
-@Get('top-referrer')
-  @ApiOperation({ summary: 'Get the user with the highest number of referrals' })
+@Get('leaderboard')
+  @ApiOperation({ summary: 'Get paginated leaderboard of top referrers' })
   @ApiResponse({
     status: 200,
-    description: 'Returns the top referrer user and their invite count',
+    description: 'Returns an array of users sorted by referral count (desc)',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'No top referrer found or no referrals exist',
-  })
-  async getTopReferrer() {
-    const data = await this.userService.findTopReferrer();
-    if (!data) {
-      // If no top referrer is found, throw a 404
-      throw new NotFoundException('No top referrer found');
-    }
-    return data;
+  async getLeaderboard(@Query('page') page = '1', @Query('limit') limit = '10') {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+    return this.userService.getReferralsLeaderboard(pageNumber, limitNumber);
   }
 
 }
