@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:20-alpine AS build
+FROM node:20-alpine AS Build
 RUN apk add --no-cache openssl git
 WORKDIR /usr/src/app
 COPY package*.json ./
@@ -16,9 +16,9 @@ RUN apk add --no-cache openssl
 WORKDIR /usr/src/app
 
 # Copy the built project from the build stage
-COPY --from=build /usr/src/app/dist ./dist
-COPY --from=build /usr/src/app/package.json ./package.json
-COPY --from=build /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=Build /usr/src/app/dist ./dist
+COPY --from=Build /usr/src/app/package.json ./package.json
+COPY --from=Build /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 COPY prisma ./prisma
 
 # Install only production dependencies
