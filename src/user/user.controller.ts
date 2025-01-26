@@ -8,6 +8,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  NotFoundException,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -387,5 +389,17 @@ async isFollowing(
     return badRequest({ message: error.message });
   }
 }
+
+@Get('leaderboard')
+  @ApiOperation({ summary: 'Get paginated leaderboard of top referrers' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns an array of users sorted by referral count (desc)',
+  })
+  async getLeaderboard(@Query('page') page = '1', @Query('limit') limit = '10') {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+    return this.userService.getReferralsLeaderboard(pageNumber, limitNumber);
+  }
 
 }

@@ -121,7 +121,7 @@ export class CreateUserDto {
   @IsOptional()
   // @IsNotEmpty()
   @IsString()
-  inviteLink: string;
+  inviteLink?: string;
 
   @ApiProperty({
     required: false,

@@ -14,7 +14,7 @@ import { RankService } from 'src/rank/rank.service';
 import { UpdateConnectionRequestDto } from './dto/update-connection-request.dto';
 import { SendConnectionRequestDto } from './dto/send-connection-request.dto';
 import { GoogleCloudStorageService } from 'src/google-cloud-storage/google-cloud-storage.service';
-
+import { UserGateway } from './user.gateway';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -25,6 +25,7 @@ export class UserService {
     // private s3Service: S3Service,
     private rankService: RankService,
     private gcloudService: GoogleCloudStorageService,
+    private userGateway: UserGateway,
   ) { }
 
   async onModuleInit() {
@@ -81,7 +82,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-
+          this.userGateway.broadcastNewUser(newUser);
           return newUser;
         },
         { timeout: 10000 },
@@ -620,6 +621,70 @@ export class UserService {
       this.logger.error(`Error fetching top ranked users: ${error.message}`);
       throw error;
     }
+  }
+
+  async getReferralsLeaderboard(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    // 1) Get total number of *unique* referrers (for total pages)
+    //    Because groupBy(referrerId) returns an array of distinct referrers, the length = total distinct referrer IDs
+    const allReferrers = await this.prisma.referral.groupBy({
+      by: ['referrerId'],
+    });
+    const totalCount = allReferrers.length;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    if (totalCount === 0) {
+
+      return {
+        data: [],
+        meta: {
+          totalCount,
+          currentPage: page,
+          totalPages,
+        },
+      };
+    }
+
+
+    const groupedReferrals = await this.prisma.referral.groupBy({
+      by: ['referrerId'],
+      _count: {
+        referrerId: true,
+      },
+      orderBy: {
+        _count: {
+          referrerId: 'desc',
+        },
+      },
+      skip,
+      take: limit,
+    });
+
+
+    const referrerIds = groupedReferrals.map((r) => r.referrerId);
+    const referrers = await this.prisma.user.findMany({
+      where: { id: { in: referrerIds } },
+    });
+
+
+    const userMap = new Map<number, User>();
+    referrers.forEach((u) => userMap.set(u.id, u));
+
+
+    const data = groupedReferrals.map((item) => ({
+      user: userMap.get(item.referrerId),
+      inviteCount: item._count.referrerId,
+    }));
+
+    return {
+      data,
+      meta: {
+        totalCount,
+        currentPage: page,
+        totalPages,
+      },
+    };
   }
 
 }
