@@ -1,0 +1,9 @@
+import { Program, web3 } from '@coral-xyz/anchor';
+import { PublicKey } from '@solana/web3.js';
+import { HorseRace } from '../../../../target/types/horse_race';
+export type CompetitionPoolResponse = {
+    poolKeys: web3.PublicKey[];
+    competitionTx: web3.VersionedTransaction;
+    poolTxs: web3.VersionedTransaction[];
+};
+export declare function createCompetitionWithPools(program: Program<HorseRace>, admin: PublicKey, competitionHash: PublicKey, tokenA: PublicKey, priceFeedId: string, adminKeys: PublicKey[], houseCutFactor: number, minPayoutRatio: number, interval: number, startTime: number, endTime: number, treasury: PublicKey): Promise<CompetitionPoolResponse>;

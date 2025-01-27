@@ -1,0 +1,578 @@
+{
+    "address": "3U8ZsW8cd3GNcu69AhksaNEoeBCh8sHywvCHbm7mxaHz",
+    "metadata": {
+        "name": "horse_race",
+        "version": "0.1.0",
+        "spec": "0.1.0",
+        "description": "Created with Anchor"
+    },
+    "instructions": [
+        {
+            "name": "run_cancel_bet",
+            "docs": [
+                "Cancel a Bet"
+            ],
+            "discriminator": [
+                154,
+                97,
+                164,
+                238,
+                225,
+                178,
+                79,
+                134
+            ],
+            "accounts": [
+                {
+                    "name": "user",
+                    "writable": true,
+                    "signer": true,
+                    "relations": [
+                        "bet"
+                    ]
+                },
+                {
+                    "name": "bet",
+                    "writable": true
+                },
+                {
+                    "name": "pool",
+                    "writable": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "run_create_bet",
+            "docs": [
+                "Create a Bet"
+            ],
+            "discriminator": [
+                83,
+                62,
+                238,
+                252,
+                115,
+                109,
+                59,
+                27
+            ],
+            "accounts": [
+                {
+                    "name": "user",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "bet_hash_acc",
+                    "writable": true
+                },
+                {
+                    "name": "bet",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    98,
+                                    101,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "user"
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "pool_key"
+                            },
+                            {
+                                "kind": "account",
+                                "path": "bet_hash_acc"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "pool",
+                    "writable": true
+                },
+                {
+                    "name": "system_program",
+                    "docs": [
+                        "System program"
+                    ],
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                },
+                {
+                    "name": "lower_bound_price",
+                    "type": "u64"
+                },
+                {
+                    "name": "upper_bound_price",
+                    "type": "u64"
+                },
+                {
+                    "name": "pool_key",
+                    "type": "pubkey"
+                },
+                {
+                    "name": "competition",
+                    "type": "pubkey"
+                }
+            ]
+        },
+        {
+            "name": "run_create_competition",
+            "discriminator": [
+                85,
+                21,
+                141,
+                208,
+                23,
+                187,
+                111,
+                68
+            ],
+            "accounts": [
+                {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "comp_hash_acc",
+                    "writable": true
+                },
+                {
+                    "name": "competition",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    99,
+                                    111,
+                                    109,
+                                    112,
+                                    101,
+                                    116,
+                                    105,
+                                    116,
+                                    105,
+                                    111,
+                                    110
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "comp_hash_acc"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "token_a",
+                    "type": "pubkey"
+                },
+                {
+                    "name": "price_feed_id",
+                    "type": "string"
+                },
+                {
+                    "name": "admin",
+                    "type": {
+                        "vec": "pubkey"
+                    }
+                },
+                {
+                    "name": "house_cut_factor",
+                    "type": "u8"
+                },
+                {
+                    "name": "min_payout_ratio",
+                    "type": "u8"
+                },
+                {
+                    "name": "interval",
+                    "type": "u64"
+                },
+                {
+                    "name": "start_time",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_time",
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "run_create_pool",
+            "docs": [
+                "Create a Pool"
+            ],
+            "discriminator": [
+                225,
+                56,
+                189,
+                2,
+                220,
+                61,
+                209,
+                12
+            ],
+            "accounts": [
+                {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "pool_hash_acc",
+                    "writable": true
+                },
+                {
+                    "name": "competition_acc",
+                    "writable": true
+                },
+                {
+                    "name": "pool",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "competition_acc"
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool_hash_acc"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "start_time",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_time",
+                    "type": "u64"
+                },
+                {
+                    "name": "treasury",
+                    "type": "pubkey"
+                }
+            ]
+        },
+        {
+            "name": "run_settle_pool",
+            "docs": [
+                "Settle a Pool"
+            ],
+            "discriminator": [
+                96,
+                137,
+                173,
+                253,
+                147,
+                165,
+                192,
+                218
+            ],
+            "accounts": [],
+            "args": [
+                {
+                    "name": "competition_key",
+                    "type": "pubkey"
+                }
+            ]
+        },
+        {
+            "name": "run_update_competition",
+            "discriminator": [
+                210,
+                126,
+                133,
+                97,
+                83,
+                143,
+                202,
+                83
+            ],
+            "accounts": [
+                {
+                    "name": "competition",
+                    "writable": true
+                },
+                {
+                    "name": "authority",
+                    "signer": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "token_a",
+                    "type": "pubkey"
+                },
+                {
+                    "name": "price_feed_id",
+                    "type": "string"
+                },
+                {
+                    "name": "admin",
+                    "type": {
+                        "vec": "pubkey"
+                    }
+                },
+                {
+                    "name": "house_cut_factor",
+                    "type": "u8"
+                },
+                {
+                    "name": "min_payout_ratio",
+                    "type": "u8"
+                },
+                {
+                    "name": "interval",
+                    "type": "u64"
+                },
+                {
+                    "name": "start_time",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_time",
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "accounts": [
+        {
+            "name": "Bet",
+            "discriminator": [
+                147,
+                23,
+                35,
+                59,
+                15,
+                75,
+                155,
+                32
+            ]
+        },
+        {
+            "name": "Competition",
+            "discriminator": [
+                193,
+                49,
+                76,
+                118,
+                106,
+                22,
+                221,
+                106
+            ]
+        },
+        {
+            "name": "Pool",
+            "discriminator": [
+                241,
+                154,
+                109,
+                4,
+                17,
+                177,
+                109,
+                188
+            ]
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "InvalidTimeRange",
+            "msg": "Invalid time range."
+        },
+        {
+            "code": 6001,
+            "name": "InvalidOracleId",
+            "msg": "Invalid oracle id provided, please check the latest oracle id"
+        },
+        {
+            "code": 6002,
+            "name": "OracleInactive",
+            "msg": "Oracle is inactive."
+        },
+        {
+            "code": 6003,
+            "name": "OutsideOracleTimeRange",
+            "msg": "Oracle is outside the time range."
+        }
+    ],
+    "types": [
+        {
+            "name": "Bet",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "user",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "competition",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "lower_bound_price",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "upper_bound_price",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "pool_key",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "status",
+                        "type": {
+                            "defined": {
+                                "name": "BetStatus"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "BetStatus",
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "name": "Active"
+                    },
+                    {
+                        "name": "Cancelled"
+                    },
+                    {
+                        "name": "Settled"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Competition",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "token_a",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "price_feed_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "house_cut_factor",
+                        "type": "u8"
+                    },
+                    {
+                        "name": "min_payout_ratio",
+                        "type": "u8"
+                    },
+                    {
+                        "name": "admin",
+                        "type": {
+                            "vec": "pubkey"
+                        }
+                    },
+                    {
+                        "name": "interval",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "u64"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Pool",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "pool_hash",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "competition_key",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "treasury",
+                        "type": "pubkey"
+                    }
+                ]
+            }
+        }
+    ]
+}

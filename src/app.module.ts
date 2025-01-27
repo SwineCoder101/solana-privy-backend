@@ -17,6 +17,9 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PrivyModule } from './privy/privy.module';
 import privyConfig from './privy/privy.config';
+import { CompetitionModule } from './solana/competition/competition.module';
+import { OrderModule } from './solana/order/order.module';
+import { OracleModule } from './solana/oracle/oracle.module';
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import privyConfig from './privy/privy.config';
       secret: 'your-secret-key', // Replace with your actual secret key
     }),
     PrivyModule,
+    CompetitionModule,
+    OrderModule,
+    OracleModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, S3Service],

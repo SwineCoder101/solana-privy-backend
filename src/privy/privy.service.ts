@@ -33,6 +33,26 @@ export class PrivyService {
     return delegatedWallets[0];
   }
 
+  async executeDelegatedActionWithWallet(
+    wallet: WalletWithMetadata,
+    transaction: any,
+    chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+  ): Promise<string> {
+    try {
+      const { hash } = await this.privyClient.walletApi.solana.signAndSendTransaction({
+        address: wallet.address,
+        chainType: 'solana',
+        caip2: chainId,
+        transaction: transaction,
+      });
+
+      return hash;
+    } catch (error) {
+      console.error('Error executing transaction:', error);
+      throw new InternalServerErrorException('Failed to execute transaction.');
+    }
+  }
+
   async executeDelegatedAction(
     userId: string, 
     transaction: any, 
@@ -41,15 +61,7 @@ export class PrivyService {
     try {
       
       const delegatedWallet = await this.getDelegatedWallet(userId);
-
-      const { hash } = await this.privyClient.walletApi.solana.signAndSendTransaction({
-        address: delegatedWallet,
-        chainType: 'solana',
-        caip2: chainId,
-        transaction: transaction,
-      });
-
-      return hash;
+      return this.executeDelegatedActionWithWallet(delegatedWallet, transaction, chainId);
     } catch (error) {
       console.error('Error executing transaction:', error);
       throw new InternalServerErrorException('Failed to execute transaction.');
