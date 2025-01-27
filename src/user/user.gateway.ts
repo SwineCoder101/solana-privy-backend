@@ -13,7 +13,7 @@ export class UserGateway {
   server: Server;
 
   // This method can be called by your service once a user is created
-  broadcastNewUser(user: User) {
+  broadcastNewUser(user: string) {
     this.server.emit('userJoined', user);
   }
 }

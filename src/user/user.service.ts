@@ -43,10 +43,13 @@ export class UserService {
   // }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+
     const prisma = this.prisma;
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { referrerInviteLink, ...userData } = createUserDto;
+
+      
       const rank = await this.rankService.rankNewUser();
       const result = await prisma.$transaction(
         async (tx) => {
@@ -55,7 +58,7 @@ export class UserService {
               ...userData,
               telegramId: BigInt(createUserDto.telegramId),
               freelancerRoleTypes: createUserDto.freelancerRoleTypes || [],
-              inviteLink: createUserDto.inviteLink,
+              inviteLink: `${createUserDto.inviteLink}-${new Date().getTime().toString()}`,
               inviteLinkUsageCount: 0,
               isOnline: false,
               lastOnline: new Date(),
@@ -82,7 +85,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-          this.userGateway.broadcastNewUser(newUser);
+          this.userGateway.broadcastNewUser(JSON.stringify(newUser));
           return newUser;
         },
         { timeout: 10000 },
