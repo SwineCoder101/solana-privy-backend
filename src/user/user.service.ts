@@ -85,7 +85,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-          this.userGateway.broadcastNewUser(JSON.stringify(newUser));
+          // this.userGateway.broadcastNewUser(JSON.stringify(newUser));
           return newUser;
         },
         { timeout: 10000 },
