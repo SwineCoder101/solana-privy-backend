@@ -15,10 +15,17 @@ import { RankModule } from './rank/rank.module';
 import { GoogleCloudStorageModule } from './google-cloud-storage/google-cloud-storage.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PrivyModule } from './privy/privy.module';
+import privyConfig from './privy/privy.config';
+
 @Module({
   imports: [
     UserModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      load: [privyConfig],
+    }),
     StickerModule,
     CacheModule.register({
       ttl: 600, // Cache for 10 minutes
@@ -34,8 +41,8 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     JwtModule.register({
       secret: 'your-secret-key', // Replace with your actual secret key
-  }),
-
+    }),
+    PrivyModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, S3Service],
