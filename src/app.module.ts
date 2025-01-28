@@ -23,7 +23,7 @@ import { OracleModule } from './solana/oracle/oracle.module';
 
 @Module({
   imports: [
-    // UserModule,
+    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
