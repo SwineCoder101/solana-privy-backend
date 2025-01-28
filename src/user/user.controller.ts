@@ -32,6 +32,22 @@ import { UpdateConnectionRequestDto } from './dto/update-connection-request.dto'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+
+  @Get('leaderboards')
+  @ApiOperation({ summary: 'Get paginated leaderboard of top referrers' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns an array of users sorted by referral count (desc)',
+  })
+  async getLeaderboard(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ) {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+    return this.userService.getReferralsLeaderboard(pageNumber, limitNumber);
+  }
+
   @Post('create-user')
   @ApiOperation({ summary: 'Create User' })
   @ApiBody({ type: CreateUserDto })
@@ -93,24 +109,25 @@ export class UserController {
   }
 
   @Get('top-ranked')
-@ApiOperation({ summary: 'Get Top Ranked Users' })
-@ApiResponse({ status: 200, description: 'User retrieved successfully' })
-@ApiResponse({ status: 404, description: 'User not found' })
-async getTopRankedUsers() {
-  try {
-    // Use BigInt instead of parseInt
-    const users = await this.userService.getTopRankedUsers();
-    return users;
-  } catch (error) {
-    return badRequest({ message: error.message });
+  @ApiOperation({ summary: 'Get Top Ranked Users' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getTopRankedUsers() {
+    try {
+      // Use BigInt instead of parseInt
+      const users = await this.userService.getTopRankedUsers();
+      return users;
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
   }
-}
 
   @Get(':telegramId')
   @ApiOperation({ summary: 'Get User by Telegram ID' })
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async getUserByTelegramId(@Param('telegramId') telegramId: string) {
+    console.log('telegramId00000', telegramId);
     try {
       const user = await this.userService.getUserByTelegramId(telegramId);
       return ok(user);
@@ -120,20 +137,18 @@ async getTopRankedUsers() {
   }
 
   @Get('/get-user/:userId')
-@ApiOperation({ summary: 'Get User by User ID' })
-@ApiResponse({ status: 200, description: 'User retrieved successfully' })
-@ApiResponse({ status: 404, description: 'User not found' })
-async getUserById(@Param('userId') userId: string) {
-  try {
-    // Use BigInt instead of parseInt
-    const user = await this.userService.getUserById(userId);
-    return ok(user);
-  } catch (error) {
-    return badRequest({ message: error.message });
+  @ApiOperation({ summary: 'Get User by User ID' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUserById(@Param('userId') userId: string) {
+    try {
+      // Use BigInt instead of parseInt
+      const user = await this.userService.getUserById(userId);
+      return ok(user);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
   }
-}
-
-
 
   @Post('heartbeat')
   @ApiOperation({ summary: 'User Heartbeat' })
@@ -255,9 +270,7 @@ async getUserById(@Param('userId') userId: string) {
   @ApiResponse({ status: 404, description: 'User not found' })
   async getUserConnections(@Param('telegramId') telegramId: string) {
     try {
-      const connections = await this.userService.getUserConnections(
-        telegramId,
-      );
+      const connections = await this.userService.getUserConnections(telegramId);
       return ok(connections);
     } catch (error) {
       return badRequest({ message: error.message });
@@ -296,110 +309,102 @@ async getUserById(@Param('userId') userId: string) {
   }
 
   @Post(':userId/follow')
-@ApiOperation({ summary: 'Follow a User' })
-@ApiResponse({
-  status: 201,
-  description: 'Successfully followed the user',
-})
-@ApiResponse({ status: 400, description: 'Invalid input or already following' })
-async followUser(
-  @Param('userId') followerId: string,
-  @Body('followedId') followedId: number,
-) {
-  try {
-    const follow = await this.userService.followUser(
-      parseInt(followerId),
-      followedId,
-    );
-    return ok(follow);
-  } catch (error) {
-    return badRequest({ message: error.message });
+  @ApiOperation({ summary: 'Follow a User' })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully followed the user',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or already following',
+  })
+  async followUser(
+    @Param('userId') followerId: string,
+    @Body('followedId') followedId: number,
+  ) {
+    try {
+      const follow = await this.userService.followUser(
+        parseInt(followerId),
+        followedId,
+      );
+      return ok(follow);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
   }
-}
 
-@Delete(':userId/unfollow')
-@ApiOperation({ summary: 'Unfollow a User' })
-@ApiResponse({
-  status: 200,
-  description: 'Successfully unfollowed the user',
-})
-@ApiResponse({ status: 404, description: 'Not following this user' })
-async unfollowUser(
-  @Param('userId') followerId: string,
-  @Body('followedId') followedId: number,
-) {
-  try {
-    const unfollow = await this.userService.unfollowUser(
-      parseInt(followerId),
-      followedId,
-    );
-    return ok(unfollow);
-  } catch (error) {
-    return badRequest({ message: error.message });
-  }
-}
-
-@Get(':userId/followers')
-@ApiOperation({ summary: 'Get User Followers' })
-@ApiResponse({
-  status: 200,
-  description: 'Followers retrieved successfully',
-})
-async getFollowers(@Param('userId') userId: string) {
-  try {
-    const followers = await this.userService.getFollowers(parseInt(userId));
-    return ok(followers);
-  } catch (error) {
-    return badRequest({ message: error.message });
-  }
-}
-
-@Get(':userId/followings')
-@ApiOperation({ summary: 'Get Users Followed by a User' })
-@ApiResponse({
-  status: 200,
-  description: 'Followings retrieved successfully',
-})
-async getFollowings(@Param('userId') userId: string) {
-  try {
-    const followings = await this.userService.getFollowings(parseInt(userId));
-    return ok(followings);
-  } catch (error) {
-    return badRequest({ message: error.message });
-  }
-}
-
-@Get(':userId/is-following/:followedId')
-@ApiOperation({ summary: 'Check if User is Following Another User' })
-@ApiResponse({
-  status: 200,
-  description: 'Follow status retrieved successfully',
-})
-async isFollowing(
-  @Param('userId') followerId: string,
-  @Param('followedId') followedId: string,
-) {
-  try {
-    const isFollowing = await this.userService.isFollowing(
-      parseInt(followerId),
-      parseInt(followedId),
-    );
-    return ok({ isFollowing });
-  } catch (error) {
-    return badRequest({ message: error.message });
-  }
-}
-
-@Get('leaderboard')
-  @ApiOperation({ summary: 'Get paginated leaderboard of top referrers' })
+  @Delete(':userId/unfollow')
+  @ApiOperation({ summary: 'Unfollow a User' })
   @ApiResponse({
     status: 200,
-    description: 'Returns an array of users sorted by referral count (desc)',
+    description: 'Successfully unfollowed the user',
   })
-  async getLeaderboard(@Query('page') page = '1', @Query('limit') limit = '10') {
-    const pageNumber = parseInt(page, 10) || 1;
-    const limitNumber = parseInt(limit, 10) || 10;
-    return this.userService.getReferralsLeaderboard(pageNumber, limitNumber);
+  @ApiResponse({ status: 404, description: 'Not following this user' })
+  async unfollowUser(
+    @Param('userId') followerId: string,
+    @Body('followedId') followedId: number,
+  ) {
+    try {
+      const unfollow = await this.userService.unfollowUser(
+        parseInt(followerId),
+        followedId,
+      );
+      return ok(unfollow);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
   }
+
+  @Get(':userId/followers')
+  @ApiOperation({ summary: 'Get User Followers' })
+  @ApiResponse({
+    status: 200,
+    description: 'Followers retrieved successfully',
+  })
+  async getFollowers(@Param('userId') userId: string) {
+    try {
+      const followers = await this.userService.getFollowers(parseInt(userId));
+      return ok(followers);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
+  }
+
+  @Get(':userId/followings')
+  @ApiOperation({ summary: 'Get Users Followed by a User' })
+  @ApiResponse({
+    status: 200,
+    description: 'Followings retrieved successfully',
+  })
+  async getFollowings(@Param('userId') userId: string) {
+    try {
+      const followings = await this.userService.getFollowings(parseInt(userId));
+      return ok(followings);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
+  }
+
+  @Get(':userId/is-following/:followedId')
+  @ApiOperation({ summary: 'Check if User is Following Another User' })
+  @ApiResponse({
+    status: 200,
+    description: 'Follow status retrieved successfully',
+  })
+  async isFollowing(
+    @Param('userId') followerId: string,
+    @Param('followedId') followedId: string,
+  ) {
+    try {
+      const isFollowing = await this.userService.isFollowing(
+        parseInt(followerId),
+        parseInt(followedId),
+      );
+      return ok({ isFollowing });
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
+  }
+
 
 }

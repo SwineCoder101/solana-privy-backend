@@ -26,7 +26,7 @@ export class UserService {
     private rankService: RankService,
     private gcloudService: GoogleCloudStorageService,
     private userGateway: UserGateway,
-  ) { }
+  ) {}
 
   async onModuleInit() {
     await this.rankService.initializeRanks();
@@ -43,13 +43,11 @@ export class UserService {
   // }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-
     const prisma = this.prisma;
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { referrerInviteLink, ...userData } = createUserDto;
 
-      
       const rank = await this.rankService.rankNewUser();
       const result = await prisma.$transaction(
         async (tx) => {
@@ -58,7 +56,7 @@ export class UserService {
               ...userData,
               telegramId: BigInt(createUserDto.telegramId),
               freelancerRoleTypes: createUserDto.freelancerRoleTypes || [],
-              inviteLink: `${createUserDto.inviteLink}-${new Date().getTime().toString()}`,
+              inviteLink: `${createUserDto.inviteLink}`,
               inviteLinkUsageCount: 0,
               isOnline: false,
               lastOnline: new Date(),
@@ -66,17 +64,18 @@ export class UserService {
             },
           });
 
-          // let referrerId: number | undefined;
+          let referrerId: number | undefined;
 
-          // if (referrerInviteLink) {
-          //   const referral = await this.referralService.createReferral(
-          //     referrerInviteLink,
-          //     newUser.id,
-          //     tx,
-          //   );
-          //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          //   referrerId = referral.referrerId;
-          // }
+          if (referrerInviteLink) {
+            const referral = await this.referralService.createReferral(
+              referrerInviteLink,
+              newUser.id,
+              tx,
+            );
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            referrerId = referral.referrerId;
+          }
+          
 
           // Rank the new user
           // await this.rankService.rankNewUser({
@@ -85,7 +84,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-          // this.userGateway.broadcastNewUser(JSON.stringify(newUser));
+          this.userGateway.broadcastNewUser(JSON.stringify(newUser));
           return newUser;
         },
         { timeout: 10000 },
@@ -161,6 +160,7 @@ export class UserService {
   }
 
   async getUserByTelegramId(telegramId: string) {
+    console.log('telegramId-----', telegramId);
     try {
       const user = await this.prisma.user.findUnique({
         where: { telegramId: BigInt(telegramId) },
@@ -170,7 +170,10 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
 
-      return user;
+      return {
+        ...user,
+        telegramId: user.telegramId.toString(),
+      };
     } catch (error) {
       this.logger.error(`Error fetching user by Telegram ID: ${error.message}`);
       throw error;
@@ -240,14 +243,9 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
 
-      const userPhotoPrefix = 'talentgram/user-photos/'
+      const userPhotoPrefix = 'talentgram/user-photos/';
       const fileKey = `${userPhotoPrefix}${userId}-${Date.now()}-${originalname}`;
-      await this.gcloudService.uploadFile(
-        fileBuffer,
-        mimetype,
-        fileKey,
-      );
-
+      await this.gcloudService.uploadFile(fileBuffer, mimetype, fileKey);
 
       const updatedUser = await this.prisma.user.update({
         where: { id: userId },
@@ -426,9 +424,9 @@ export class UserService {
     try {
       const user = await this.prisma.user.findUnique({
         where: {
-          telegramId: BigInt(telegramId)
-        }
-      })
+          telegramId: BigInt(telegramId),
+        },
+      });
       const connections = await this.prisma.connection.findMany({
         where: {
           OR: [{ user1Id: user.id }, { user2Id: user.id }],
@@ -638,7 +636,6 @@ export class UserService {
     const totalPages = Math.ceil(totalCount / limit);
 
     if (totalCount === 0) {
-
       return {
         data: [],
         meta: {
@@ -648,7 +645,6 @@ export class UserService {
         },
       };
     }
-
 
     const groupedReferrals = await this.prisma.referral.groupBy({
       by: ['referrerId'],
@@ -664,16 +660,13 @@ export class UserService {
       take: limit,
     });
 
-
     const referrerIds = groupedReferrals.map((r) => r.referrerId);
     const referrers = await this.prisma.user.findMany({
       where: { id: { in: referrerIds } },
     });
 
-
     const userMap = new Map<number, User>();
     referrers.forEach((u) => userMap.set(u.id, u));
-
 
     const data = groupedReferrals.map((item) => ({
       user: userMap.get(item.referrerId),
@@ -689,5 +682,4 @@ export class UserService {
       },
     };
   }
-
 }
