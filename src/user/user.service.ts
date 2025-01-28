@@ -47,7 +47,6 @@ export class UserService {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { referrerInviteLink, ...userData } = createUserDto;
-
       const rank = await this.rankService.rankNewUser();
       const result = await prisma.$transaction(
         async (tx) => {
@@ -84,7 +83,8 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-          this.userGateway.broadcastNewUser(JSON.stringify(newUser));
+          console.log("time to call it", newUser);
+          this.userGateway.broadcastNewUser(newUser);
           return newUser;
         },
         { timeout: 10000 },
