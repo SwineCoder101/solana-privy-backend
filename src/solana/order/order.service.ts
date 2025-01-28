@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
-import { createBet } from '../sdk/lib/sdk/src/instructions/user/create-bet';
-import { cancelBet } from '../sdk/lib/sdk/src/instructions/user/cancel-bet';
+import { createBet } from '@solana-sdk/instructions/user/create-bet';
+import { cancelBet } from '@solana-sdk/instructions/user/cancel-bet';
 
 @Injectable()
 export class OrderService {
@@ -25,7 +25,7 @@ export class OrderService {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
     const transaction = await createBet(
-      this.programService.getProgram(),
+      this.programService.getProgram() as any,
       new PublicKey(delegatedWallet.address),
       params.amount,
       params.lowerBoundPrice,
@@ -47,7 +47,7 @@ export class OrderService {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
     const transaction = await cancelBet(
-      this.programService.getProgram(),
+      this.programService.getProgram() as any,
       new PublicKey(delegatedWallet.address),
       params.poolKey,
       params.betHash

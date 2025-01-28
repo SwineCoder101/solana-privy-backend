@@ -7,7 +7,17 @@
     "assets": [
       {
         "include": "solana/sdk/**/*",
-        "outDir": "dist/src"
+        "watchAssets": true,
+        "outDir": "dist"
+      }
+    ],
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": false,
+          "introspectComments": true
+        }
       }
     ]
   }
