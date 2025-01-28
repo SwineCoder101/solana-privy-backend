@@ -7,7 +7,8 @@
     "assets": [
       {
         "include": "solana/sdk/**/*",
-        "outDir": "dist/src"
+        "watchAssets": true,
+        "outDir": "dist"
       }
     ]
   }

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
-import { updateFeed } from '../sdk/lib/sdk/src/instructions/admin/update-pool-feed';
+import { updateFeed } from '@solana-sdk/instructions/admin/update-pool-feed';
 
 @Injectable()
 export class OracleService {
@@ -28,9 +28,8 @@ export class OracleService {
     const authorityKeypair = Keypair.fromSecretKey(
       new Uint8Array(JSON.parse(authorityPrivateKey))
     );
-
     const transaction = await updateFeed(
-      this.programService.getProgram(),
+      this.programService.getProgram() as any,
       authorityKeypair,
       params.poolKey,
       params.priceFeedId,

@@ -4,10 +4,9 @@ import { PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
 import { 
-  updateCompetitionInstruction,
-  HorseRace 
-} from '../sdk';
-import { createCompetitionWithPools } from '../sdk/lib/sdk/src/instructions/admin/create-competition-with-pools';
+  createCompetitionWithPools,
+  updateCompetitionInstruction 
+} from '@solana-sdk/instructions/admin';
 
 @Injectable()
 export class CompetitionService {
@@ -35,7 +34,7 @@ export class CompetitionService {
     const admin = new PublicKey(this.configService.get('SOLANA_PUBLIC_PROGRAM_ID'));
     
     const response = await createCompetitionWithPools(
-      this.programService.getProgram(),
+      this.programService.getProgram() as any,
       admin,
       params.competitionHash,
       params.tokenA,
@@ -85,7 +84,7 @@ export class CompetitionService {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
     const transaction = await updateCompetitionInstruction(
-      this.programService.getProgram(),
+      this.programService.getProgram() as any,
       params.competitionKey,
       params.tokenA,
       params.priceFeedId,

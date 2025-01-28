@@ -2,7 +2,8 @@ import { AnchorProvider, Program, Wallet } from '@coral-xyz/anchor';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Connection, Keypair } from '@solana/web3.js';
-import { HorseRace, IDL } from '../sdk/lib/sdk/src';
+import { IDL } from '@solana-sdk/idl';
+import { HorseRace } from '@solana-sdk/types/horse_race';
 
 @Injectable()
 export class ProgramService implements OnModuleInit {
@@ -37,7 +38,7 @@ export class ProgramService implements OnModuleInit {
 
     // Initialize the program
     this.program = new Program<HorseRace>(
-      IDL,
+      IDL as any,
       provider
     );
   }
