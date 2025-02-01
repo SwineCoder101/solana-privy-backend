@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, Min, IsEnum, IsArray, ArrayMinSize } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  Min,
+  IsEnum,
+  IsArray,
+  ArrayMinSize,
+} from 'class-validator';
 import { JobStatus } from '@prisma/client';
 
 export class CreateJobDto {

@@ -1,8 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.cancelBetEntry = cancelBetEntry;
 exports.cancelBet = cancelBet;
 const web3_js_1 = require("@solana/web3.js");
 const utils_1 = require("../../utils");
+async function cancelBetEntry(program, params) {
+    const { user, poolKey, betHash } = params;
+    return cancelBet(program, user, poolKey, betHash);
+}
 async function cancelBet(program, user, poolKey, betHash) {
     const [betPDA] = web3_js_1.PublicKey.findProgramAddressSync([
         Buffer.from("bet"),

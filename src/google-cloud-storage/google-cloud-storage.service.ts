@@ -4,7 +4,6 @@ import { Storage } from '@google-cloud/storage';
 
 @Injectable()
 export class GoogleCloudStorageService {
-
   private storage: Storage;
   private bucketName: string;
 
@@ -12,7 +11,8 @@ export class GoogleCloudStorageService {
     // For local development, use the key file
     if (process.env.NODE_ENV === 'development') {
       this.storage = new Storage({
-        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS || 'local-dev-key.json'
+        keyFilename:
+          process.env.GOOGLE_APPLICATION_CREDENTIALS || 'local-dev-key.json',
       });
     } else {
       // For production, use default credentials
@@ -25,7 +25,7 @@ export class GoogleCloudStorageService {
   async uploadFile(
     file: Buffer,
     mimetype: string,
-    key: string
+    key: string,
   ): Promise<string> {
     try {
       // Explicitly specify the bucket
@@ -41,8 +41,8 @@ export class GoogleCloudStorageService {
 
       await gcsFile.save(file, {
         metadata: {
-          contentType: mimetype
-        }
+          contentType: mimetype,
+        },
       });
 
       // Construct public URL

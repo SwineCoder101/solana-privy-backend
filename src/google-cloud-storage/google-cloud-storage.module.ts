@@ -3,9 +3,9 @@ import { GoogleCloudStorageService } from './google-cloud-storage.service';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports:[ConfigModule],
+  imports: [ConfigModule],
   controllers: [],
   providers: [GoogleCloudStorageService],
-  exports:[GoogleCloudStorageService],
+  exports: [GoogleCloudStorageService],
 })
 export class GoogleCloudStorageModule {}

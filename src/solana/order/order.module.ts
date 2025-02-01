@@ -10,4 +10,4 @@ import { ProgramModule } from '../program/program.module';
   controllers: [OrderController],
   exports: [OrderService],
 })
-export class OrderModule {} 
+export class OrderModule {}

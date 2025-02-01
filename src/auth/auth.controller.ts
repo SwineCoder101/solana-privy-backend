@@ -1,14 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { AuthVerifyDto } from './dto/authVerify.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  
+
   @Post('createToken')
   @HttpCode(HttpStatus.OK)
   async createToken(@Body() authDto: AuthDto) {

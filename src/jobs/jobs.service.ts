@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '..//prisma.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -17,7 +22,9 @@ export class JobsService {
     const { posterId, ...rest } = createJobDto;
 
     if (!createJobDto.categories || createJobDto.categories.length === 0) {
-      throw new BadRequestException('The categories array must be provided and cannot be empty.');
+      throw new BadRequestException(
+        'The categories array must be provided and cannot be empty.',
+      );
     }
 
     const jobData = {
@@ -29,7 +36,7 @@ export class JobsService {
         connect: createJobDto.categories.map((name) => ({ name })),
       },
     };
-  
+
     return this.prisma.job.create({
       data: jobData,
     });
@@ -59,7 +66,12 @@ export class JobsService {
     try {
       const job = await this.prisma.job.findUnique({
         where: { id },
-        include: { poster: true, offers: true, conversations: true, categories: true, },
+        include: {
+          poster: true,
+          offers: true,
+          conversations: true,
+          categories: true,
+        },
       });
 
       if (!job) {
@@ -124,29 +136,78 @@ export class JobsService {
 
   async createJobCategories() {
     const categories = [
-      "ai analyst", "backend", "bitcoin", "blockchain", "community manager", "crypto",
-      "cryptography", "cto", "customer support", "dao", "data science", "defi", "design",
-      "developer relations", "devops", "discord", "economy designer", "entry level", "erc",
-      "erc 20", "evm", "front end", "full stack", "game dev", "ganache", "golang", "hardhat",
-      "intern", "java", "javascript", "layer 2", "marketing", "mobile", "moderator", "nft",
-      "node", "non tech", "open source", "openzeppelin", "pay in crypto", "product manager",
-      "project manager", "react", "refi", "research", "ruby", "rust", "sales", "smart contract",
-      "solana", "solidity", "truffle", "web3 py", "web3js", "zero knowledge"
+      'ai analyst',
+      'backend',
+      'bitcoin',
+      'blockchain',
+      'community manager',
+      'crypto',
+      'cryptography',
+      'cto',
+      'customer support',
+      'dao',
+      'data science',
+      'defi',
+      'design',
+      'developer relations',
+      'devops',
+      'discord',
+      'economy designer',
+      'entry level',
+      'erc',
+      'erc 20',
+      'evm',
+      'front end',
+      'full stack',
+      'game dev',
+      'ganache',
+      'golang',
+      'hardhat',
+      'intern',
+      'java',
+      'javascript',
+      'layer 2',
+      'marketing',
+      'mobile',
+      'moderator',
+      'nft',
+      'node',
+      'non tech',
+      'open source',
+      'openzeppelin',
+      'pay in crypto',
+      'product manager',
+      'project manager',
+      'react',
+      'refi',
+      'research',
+      'ruby',
+      'rust',
+      'sales',
+      'smart contract',
+      'solana',
+      'solidity',
+      'truffle',
+      'web3 py',
+      'web3js',
+      'zero knowledge',
     ];
-  
+
     // Fetch existing categories from the database
     const existingCategories = await this.prisma.category.findMany({
       select: { name: true },
     });
-  
+
     // Extract names of existing categories
-    const existingCategoryNames = existingCategories.map((category) => category.name);
-  
+    const existingCategoryNames = existingCategories.map(
+      (category) => category.name,
+    );
+
     // Filter categories that are not already in the database
     const newCategories = categories.filter(
-      (category) => !existingCategoryNames.includes(category)
+      (category) => !existingCategoryNames.includes(category),
     );
-  
+
     // Bulk create new categories
     if (newCategories.length > 0) {
       await this.prisma.category.createMany({
@@ -154,7 +215,7 @@ export class JobsService {
         skipDuplicates: true, // Skip duplicates for extra safety
       });
     }
-  
+
     Logger.log(`Added ${newCategories.length} new categories.`);
   }
 

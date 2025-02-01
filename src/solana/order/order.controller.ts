@@ -23,26 +23,20 @@ export class OrderController {
 
   @Post('create-bet')
   async createBet(@Body() dto: CreateBetDto) {
-    return this.orderService.createBet(
-      dto.userId,
-      {
-        amount: dto.amount,
-        lowerBoundPrice: dto.lowerBoundPrice,
-        upperBoundPrice: dto.upperBoundPrice,
-        poolKey: new PublicKey(dto.poolKey),
-        competitionKey: new PublicKey(dto.competitionKey),
-      }
-    );
+    return this.orderService.createBet(dto.userId, {
+      amount: dto.amount,
+      lowerBoundPrice: dto.lowerBoundPrice,
+      upperBoundPrice: dto.upperBoundPrice,
+      poolKey: new PublicKey(dto.poolKey),
+      competitionKey: new PublicKey(dto.competitionKey),
+    });
   }
 
   @Post('cancel-bet')
   async cancelBet(@Body() dto: CancelBetDto) {
-    return this.orderService.cancelBet(
-      dto.userId,
-      {
-        poolKey: new PublicKey(dto.poolKey),
-        betHash: new PublicKey(dto.betHash),
-      }
-    );
+    return this.orderService.cancelBet(dto.userId, {
+      poolKey: new PublicKey(dto.poolKey),
+      betHash: new PublicKey(dto.betHash),
+    });
   }
-} 
+}

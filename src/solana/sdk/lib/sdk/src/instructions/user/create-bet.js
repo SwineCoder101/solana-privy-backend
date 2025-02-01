@@ -33,11 +33,23 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createBetEntry = createBetEntry;
 exports.createBet = createBet;
 const anchor = __importStar(require("@coral-xyz/anchor"));
 const anchor_1 = require("@coral-xyz/anchor");
 const web3_js_1 = require("@solana/web3.js");
 const utils_1 = require("../../utils");
+const states_1 = require("../../states");
+async function createBetEntry(program, params) {
+    const { user, amount, lowerBoundPrice, upperBoundPrice, startTime, endTime, competitionKey } = params;
+    if (!startTime || !endTime) {
+        throw new Error('startTime and endTime are required');
+    }
+    if (!params.poolKey) {
+        params.poolKey = await (0, states_1.findPoolKeyFromStartEndTime)(program, competitionKey, startTime, endTime);
+    }
+    return createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, params.poolKey, competitionKey);
+}
 async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, poolKey, competitionKey) {
     const betHash = web3_js_1.Keypair.generate().publicKey;
     const [betPDA] = web3_js_1.PublicKey.findProgramAddressSync([

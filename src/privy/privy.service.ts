@@ -6,15 +6,15 @@ import { PrivyClient, WalletWithMetadata } from '@privy-io/server-auth';
 export class PrivyService {
   private privyClient: PrivyClient;
 
-  constructor(
-    private configService: ConfigService,
-  ) {
+  constructor(private configService: ConfigService) {
     this.privyClient = new PrivyClient(
       this.configService.get<string>('privy.appId'),
       this.configService.get<string>('privy.appSecret'),
       {
         walletApi: {
-          authorizationPrivateKey: this.configService.get<string>('privy.authorizationSigningKey'),
+          authorizationPrivateKey: this.configService.get<string>(
+            'privy.authorizationSigningKey',
+          ),
         },
       },
     );
@@ -28,7 +28,9 @@ export class PrivyService {
         account.type === 'wallet' && account.walletClientType === 'privy',
     );
 
-    const delegatedWallets = embeddedWallets.filter((wallet) => wallet.delegated);
+    const delegatedWallets = embeddedWallets.filter(
+      (wallet) => wallet.delegated,
+    );
 
     return delegatedWallets[0];
   }
@@ -36,15 +38,16 @@ export class PrivyService {
   async executeDelegatedActionWithWallet(
     wallet: WalletWithMetadata,
     transaction: any,
-    chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   ): Promise<string> {
     try {
-      const { hash } = await this.privyClient.walletApi.solana.signAndSendTransaction({
-        address: wallet.address,
-        chainType: 'solana',
-        caip2: chainId,
-        transaction: transaction,
-      });
+      const { hash } =
+        await this.privyClient.walletApi.solana.signAndSendTransaction({
+          address: wallet.address,
+          chainType: 'solana',
+          caip2: chainId,
+          transaction: transaction,
+        });
 
       return hash;
     } catch (error) {
@@ -54,17 +57,20 @@ export class PrivyService {
   }
 
   async executeDelegatedAction(
-    userId: string, 
-    transaction: any, 
-    chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    userId: string,
+    transaction: any,
+    chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   ): Promise<string> {
     try {
-      
       const delegatedWallet = await this.getDelegatedWallet(userId);
-      return this.executeDelegatedActionWithWallet(delegatedWallet, transaction, chainId);
+      return this.executeDelegatedActionWithWallet(
+        delegatedWallet,
+        transaction,
+        chainId,
+      );
     } catch (error) {
       console.error('Error executing transaction:', error);
       throw new InternalServerErrorException('Failed to execute transaction.');
     }
   }
-} 
+}

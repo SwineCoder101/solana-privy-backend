@@ -6,4 +6,4 @@ import { PrivyService } from './privy.service';
   providers: [PrivyService],
   exports: [PrivyService],
 })
-export class PrivyModule {} 
+export class PrivyModule {}

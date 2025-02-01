@@ -98,7 +98,9 @@ export class JobsController {
   }
 
   @Get('completed/:telegramId')
-  @ApiOperation({ summary: 'Get all jobs completed by a freelancer based on telegramId' })
+  @ApiOperation({
+    summary: 'Get all jobs completed by a freelancer based on telegramId',
+  })
   @ApiResponse({
     status: 200,
     description: 'Return all jobs completed by a freelancer.',
@@ -107,7 +109,10 @@ export class JobsController {
     @Param('telegramId') telegramId: string, // Use string as the type since `BigInt` cannot be directly passed in URLs
   ) {
     try {
-      const jobs = await this.jobsService.getCompletedJobsByFreelancerTelegramId(BigInt(telegramId));
+      const jobs =
+        await this.jobsService.getCompletedJobsByFreelancerTelegramId(
+          BigInt(telegramId),
+        );
       return {
         success: true,
         data: jobs,

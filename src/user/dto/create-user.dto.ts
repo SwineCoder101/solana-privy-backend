@@ -23,7 +23,10 @@ export class CreateUserDto {
   @IsOptional()
   walletAddress?: string;
 
-  @ApiProperty({ example: 'johndoegrammed', description: 'Username of the user' })
+  @ApiProperty({
+    example: 'johndoegrammed',
+    description: 'Username of the user',
+  })
   @IsString()
   @IsOptional()
   username?: string;
@@ -131,5 +134,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   referrerInviteLink?: string;
-
 }

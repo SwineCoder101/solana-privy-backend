@@ -20,7 +20,7 @@ export class OrderService {
       upperBoundPrice: number;
       poolKey: PublicKey;
       competitionKey: PublicKey;
-    }
+    },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
@@ -31,10 +31,13 @@ export class OrderService {
       params.lowerBoundPrice,
       params.upperBoundPrice,
       params.poolKey,
-      params.competitionKey
+      params.competitionKey,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(delegatedWallet, transaction);
+    return this.privyService.executeDelegatedActionWithWallet(
+      delegatedWallet,
+      transaction,
+    );
   }
 
   async cancelBet(
@@ -42,7 +45,7 @@ export class OrderService {
     params: {
       poolKey: PublicKey;
       betHash: PublicKey;
-    }
+    },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
@@ -50,9 +53,12 @@ export class OrderService {
       this.programService.getProgram() as any,
       new PublicKey(delegatedWallet.address),
       params.poolKey,
-      params.betHash
+      params.betHash,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(delegatedWallet, transaction);
+    return this.privyService.executeDelegatedActionWithWallet(
+      delegatedWallet,
+      transaction,
+    );
   }
-} 
+}

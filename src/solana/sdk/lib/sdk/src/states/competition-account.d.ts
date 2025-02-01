@@ -1,7 +1,8 @@
-import { Program, BN } from "@coral-xyz/anchor";
+import { Program, BN, ProgramAccount } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { HorseRace } from "../../../target/types/horse_race";
 export type CompetitionData = {
+    competitionKey: string;
     tokenA: string;
     priceFeedId: string;
     admin: string[];
@@ -12,6 +13,7 @@ export type CompetitionData = {
     endTime: number;
 };
 export type CompetitionProgramData = {
+    competitionKey?: PublicKey;
     tokenA: PublicKey;
     priceFeedId: string;
     admin: PublicKey[];
@@ -22,7 +24,7 @@ export type CompetitionProgramData = {
     endTime: BN | number;
 };
 export declare function convertCompetitionToProgramData(competitionData: CompetitionData): CompetitionProgramData;
-export declare function convertProgramToCompetitionData(programData: CompetitionProgramData): CompetitionData;
+export declare function convertProgramToCompetitionData(programData: ProgramAccount<CompetitionProgramData>): CompetitionData;
 export declare const findCompetitonAddress: (competitionHash: PublicKey, programId?: string) => PublicKey;
 export declare function getCompetitionData(competitionHash: PublicKey, program: Program<HorseRace>): Promise<CompetitionData>;
 export declare function getCompetitionAccount(program: Program<HorseRace>, competitionPubkey: PublicKey): Promise<{

@@ -74,7 +74,6 @@ export class UserService {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             referrerId = referral.referrerId;
           }
-          
 
           // Rank the new user
           // await this.rankService.rankNewUser({
@@ -83,7 +82,7 @@ export class UserService {
           //   age: newUser.age,
           //   referrerId: referrerId,
           // });
-          console.log("time to call it", newUser);
+          console.log('time to call it', newUser);
           this.userGateway.broadcastNewUser(newUser);
           return newUser;
         },
