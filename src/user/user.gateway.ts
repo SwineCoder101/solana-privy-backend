@@ -6,6 +6,7 @@ import { User } from '@prisma/client'; // or your user interface
 
 
 @WebSocketGateway({
+  namespace: '/api/user', 
   cors: {
     origin: '*',
   },
