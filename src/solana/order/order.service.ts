@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PublicKey } from '@solana/web3.js';
+import { Injectable, Logger } from '@nestjs/common';
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
 import { createBet } from '@solana-sdk/instructions/user/create-bet';
@@ -7,6 +7,8 @@ import { cancelBet } from '@solana-sdk/instructions/user/cancel-bet';
 
 @Injectable()
 export class OrderService {
+  private readonly logger = new Logger(OrderService.name);
+
   constructor(
     private privyService: PrivyService,
     private programService: ProgramService,
@@ -23,21 +25,26 @@ export class OrderService {
     },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
+    this.logger.log('Delegated wallet: ', delegatedWallet.address);
 
-    const transaction = await createBet(
-      this.programService.getProgram() as any,
-      new PublicKey(delegatedWallet.address),
-      params.amount,
-      params.lowerBoundPrice,
-      params.upperBoundPrice,
-      params.poolKey,
-      params.competitionKey,
-    );
-
-    return this.privyService.executeDelegatedActionWithWallet(
-      delegatedWallet,
-      transaction,
-    );
+    try {
+      const transaction = await createBet(
+        this.programService.getProgram() as any,
+        new PublicKey(delegatedWallet.address),
+        params.amount * LAMPORTS_PER_SOL,
+        params.lowerBoundPrice,
+        params.upperBoundPrice,
+        params.poolKey,
+        params.competitionKey,
+      );
+      return this.privyService.executeDelegatedActionWithWallet(
+        delegatedWallet,
+        transaction,
+      );
+    } catch (error) {
+      this.logger.error('Error creating bet: ', error);
+      throw error;
+    }
   }
 
   async cancelBet(

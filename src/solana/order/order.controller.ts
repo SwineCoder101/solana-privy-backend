@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { PublicKey } from '@solana/web3.js';
 
@@ -19,10 +19,12 @@ class CancelBetDto {
 
 @Controller('order')
 export class OrderController {
+  private readonly logger = new Logger(OrderController.name);
   constructor(private readonly orderService: OrderService) {}
 
   @Post('create-bet')
   async createBet(@Body() dto: CreateBetDto) {
+    this.logger.log('Creating bet with params: ', dto);
     return this.orderService.createBet(dto.userId, {
       amount: dto.amount,
       lowerBoundPrice: dto.lowerBoundPrice,
@@ -30,6 +32,11 @@ export class OrderController {
       poolKey: new PublicKey(dto.poolKey),
       competitionKey: new PublicKey(dto.competitionKey),
     });
+  }
+
+  @Get('getbet')
+  async getBet() {
+    return 'hello';
   }
 
   @Post('cancel-bet')

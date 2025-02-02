@@ -39,7 +39,19 @@ export class ProgramService implements OnModuleInit {
     this.program = new Program<HorseRace>(IDL as any, provider);
   }
 
+  getConnection(): Connection {
+    return this.connection;
+  }
+
   getProgram(): Program<HorseRace> {
     return this.program;
+  }
+
+  getProvider(): AnchorProvider {
+    return this.provider;
+  }
+
+  getAdminKeypair(): Keypair {
+    return this.adminKeypair;
   }
 }

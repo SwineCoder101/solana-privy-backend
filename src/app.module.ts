@@ -51,6 +51,6 @@ import { OracleModule } from './solana/oracle/oracle.module';
     OracleModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, S3Service],
+  providers: [AppService, S3Service, PrismaService],
 })
 export class AppModule {}
