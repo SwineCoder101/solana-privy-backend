@@ -10,7 +10,13 @@ import { RankModule } from 'src/rank/rank.module';
 import { GoogleCloudStorageModule } from 'src/google-cloud-storage/google-cloud-storage.module';
 import { UserGateway } from './user.gateway';
 @Module({
-  imports: [ReferralModule, JobsModule, S3Module, RankModule, GoogleCloudStorageModule],
+  imports: [
+    ReferralModule,
+    JobsModule,
+    S3Module,
+    RankModule,
+    GoogleCloudStorageModule,
+  ],
   providers: [UserService, PrismaService, UserGateway],
   controllers: [UserController],
 })

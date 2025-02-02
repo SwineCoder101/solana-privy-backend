@@ -19,23 +19,27 @@ export class OracleService {
       poolKey: PublicKey;
       priceFeedId: string;
       priceFeedAccount: PublicKey;
-    }
+    },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
-    
+
     // Create a keypair for the authority
-    const authorityPrivateKey = this.configService.get<string>('SOLANA_PRIVATE_KEY');
+    const authorityPrivateKey =
+      this.configService.get<string>('SOLANA_PRIVATE_KEY');
     const authorityKeypair = Keypair.fromSecretKey(
-      new Uint8Array(JSON.parse(authorityPrivateKey))
+      new Uint8Array(JSON.parse(authorityPrivateKey)),
     );
     const transaction = await updateFeed(
       this.programService.getProgram() as any,
       authorityKeypair,
       params.poolKey,
       params.priceFeedId,
-      params.priceFeedAccount
+      params.priceFeedAccount,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(delegatedWallet, transaction);
+    return this.privyService.executeDelegatedActionWithWallet(
+      delegatedWallet,
+      transaction,
+    );
   }
-} 
+}

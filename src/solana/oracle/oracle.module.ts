@@ -8,4 +8,4 @@ import { ProgramModule } from '../program/program.module';
   providers: [OracleService],
   exports: [OracleService],
 })
-export class OracleModule {} 
+export class OracleModule {}

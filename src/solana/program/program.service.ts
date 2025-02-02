@@ -17,33 +17,41 @@ export class ProgramService implements OnModuleInit {
   async onModuleInit() {
     this.connection = new Connection(
       this.configService.get<string>('SOLANA_RPC_URL'),
-      'confirmed'
+      'confirmed',
     );
 
     // Create a keypair from the private key in env
-    const privateKeyString = this.configService.get<string>('SOLANA_PRIVATE_KEY');
+    const privateKeyString =
+      this.configService.get<string>('SOLANA_PRIVATE_KEY');
     const privateKey = new Uint8Array(JSON.parse(privateKeyString));
     this.adminKeypair = Keypair.fromSecretKey(privateKey);
 
     const wallet = new Wallet(this.adminKeypair);
 
     // Create the provider
-    const provider = new AnchorProvider(
-      this.connection,
-      wallet,
-      { commitment: 'confirmed' }
-    );
+    const provider = new AnchorProvider(this.connection, wallet, {
+      commitment: 'confirmed',
+    });
 
     this.provider = provider;
 
     // Initialize the program
-    this.program = new Program<HorseRace>(
-      IDL as any,
-      provider
-    );
+    this.program = new Program<HorseRace>(IDL as any, provider);
+  }
+
+  getConnection(): Connection {
+    return this.connection;
   }
 
   getProgram(): Program<HorseRace> {
     return this.program;
   }
-} 
+
+  getProvider(): AnchorProvider {
+    return this.provider;
+  }
+
+  getAdminKeypair(): Keypair {
+    return this.adminKeypair;
+  }
+}

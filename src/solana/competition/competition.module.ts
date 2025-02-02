@@ -11,4 +11,4 @@ import { OrderModule } from '../order/order.module';
   controllers: [CompetitionController],
   exports: [CompetitionService],
 })
-export class CompetitionModule {} 
+export class CompetitionModule {}

@@ -6,4 +6,4 @@ export default registerAs('privy', () => ({
   authorizationSigningKey: process.env.PRIVY_AUTHORIZATION_SIGNING_KEY,
   jwksUrl: process.env.PRIVY_JWKS_URL,
   clientId: process.env.PRIVY_CLIENT_ID,
-})); 
+}));

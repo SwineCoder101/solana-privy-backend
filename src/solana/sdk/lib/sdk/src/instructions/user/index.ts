@@ -1,2 +1,2 @@
 export * from './create-bet';
-export * from './cancel-bet'; 
+export * from './cancel-bet';

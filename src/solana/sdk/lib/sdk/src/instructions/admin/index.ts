@@ -1,2 +1,2 @@
 export * from './create-competition-with-pools';
-export * from './update-competition'; 
+export * from './update-competition';

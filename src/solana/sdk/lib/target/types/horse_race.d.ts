@@ -597,8 +597,23 @@ export type HorseRace = {
     "errors": [
         {
             "code": 6000;
-            "name": "unauthorized";
-            "msg": "Unauthorized: Not a whitelisted admin or deployer.";
+            "name": "invalidTimeRange";
+            "msg": "Invalid time range.";
+        },
+        {
+            "code": 6001;
+            "name": "invalidOracleId";
+            "msg": "Invalid oracle id provided, please check the latest oracle id";
+        },
+        {
+            "code": 6002;
+            "name": "oracleInactive";
+            "msg": "Oracle is inactive.";
+        },
+        {
+            "code": 6003;
+            "name": "outsideOracleTimeRange";
+            "msg": "Oracle is outside the time range.";
         }
     ];
     "types": [

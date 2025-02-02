@@ -1,7 +1,8 @@
-import { Program, BN } from "@coral-xyz/anchor";
+import { Program, BN, ProgramAccount } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { HorseRace } from "../../../target/types/horse_race";
 export type PoolData = {
+    poolKey: string;
     poolHash: string;
     competitionKey: string;
     startTime: number;
@@ -9,6 +10,7 @@ export type PoolData = {
     treasury: string;
 };
 export type PoolProgramData = {
+    poolKey?: PublicKey;
     poolHash: PublicKey;
     competitionKey: PublicKey;
     startTime: BN | number;
@@ -16,9 +18,10 @@ export type PoolProgramData = {
     treasury: PublicKey;
 };
 export declare function convertPoolToProgramData(poolData: PoolData): PoolProgramData;
-export declare function convertProgramToPoolData(programData: PoolProgramData): PoolData;
-export declare const findPoolAddress: (programId: string, id: number) => PublicKey;
+export declare function convertProgramToPoolData(programData: ProgramAccount<PoolProgramData>): PoolData;
+export declare const findPoolAddress: (programId: string, competitionKey: string, poolHash: string) => PublicKey;
 export declare function getPoolData(program: Program<HorseRace>, poolPubkey: PublicKey): Promise<PoolData>;
+export declare function getBalanceOfPool(program: Program<HorseRace>, poolPubkey: PublicKey): Promise<number>;
 export declare function getPoolAccount(program: Program<HorseRace>, poolPubkey: PublicKey): Promise<{
     poolHash: PublicKey;
     competitionKey: PublicKey;
@@ -34,7 +37,7 @@ export declare function getPoolAccounts(program: Program<HorseRace>, poolPubkeys
     treasury: PublicKey;
 } | null)[]>;
 export declare function getPoolBalance(poolPubkey: PublicKey, program: Program<HorseRace>): Promise<number>;
-export declare function getPoolAccountsFromCompetition(program: Program<HorseRace>, competitionKey: PublicKey): Promise<import("@coral-xyz/anchor").ProgramAccount<{
+export declare function getPoolAccountsFromCompetition(program: Program<HorseRace>, competitionKey: PublicKey): Promise<ProgramAccount<{
     poolHash: PublicKey;
     competitionKey: PublicKey;
     startTime: BN;
@@ -42,3 +45,5 @@ export declare function getPoolAccountsFromCompetition(program: Program<HorseRac
     treasury: PublicKey;
 }>[]>;
 export declare function getAllPoolDataByCompetition(program: Program<HorseRace>, competition: PublicKey): Promise<PoolData[]>;
+export declare function getAllPoolDataByUser(program: Program<HorseRace>, user: PublicKey): Promise<PoolData[]>;
+export declare function findPoolKeyFromStartEndTime(program: Program<HorseRace>, competitionKey: PublicKey, startTime: number, endTime: number): Promise<PublicKey>;

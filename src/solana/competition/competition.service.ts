@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
-import { 
+import {
   createCompetitionWithPools,
-  updateCompetitionInstruction 
+  updateCompetitionInstruction,
 } from '@solana-sdk/instructions/admin';
 
 @Injectable()
@@ -29,10 +29,12 @@ export class CompetitionService {
       startTime: number;
       endTime: number;
       treasury: PublicKey;
-    }
+    },
   ) {
-    const admin = new PublicKey(this.configService.get('SOLANA_PUBLIC_PROGRAM_ID'));
-    
+    const admin = new PublicKey(
+      this.configService.get('SOLANA_PUBLIC_PROGRAM_ID'),
+    );
+
     const response = await createCompetitionWithPools(
       this.programService.getProgram() as any,
       admin,
@@ -45,25 +47,25 @@ export class CompetitionService {
       params.interval,
       params.startTime,
       params.endTime,
-      params.treasury
+      params.treasury,
     );
 
     // Execute each transaction using Privy
     const competitionTxHash = await this.privyService.executeDelegatedAction(
       userId,
-      response.competitionTx
+      response.competitionTx,
     );
 
     const poolTxHashes = await Promise.all(
-      response.poolTxs.map(tx => 
-        this.privyService.executeDelegatedAction(userId, tx)
-      )
+      response.poolTxs.map((tx) =>
+        this.privyService.executeDelegatedAction(userId, tx),
+      ),
     );
 
     return {
       competitionTxHash,
       poolTxHashes,
-      poolKeys: response.poolKeys
+      poolKeys: response.poolKeys,
     };
   }
 
@@ -79,7 +81,7 @@ export class CompetitionService {
       interval: number;
       startTime: number;
       endTime: number;
-    }
+    },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
@@ -93,9 +95,12 @@ export class CompetitionService {
       params.minPayoutRatio,
       params.interval,
       params.startTime,
-      params.endTime
+      params.endTime,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(delegatedWallet, transaction);
+    return this.privyService.executeDelegatedActionWithWallet(
+      delegatedWallet,
+      transaction,
+    );
   }
-} 
+}

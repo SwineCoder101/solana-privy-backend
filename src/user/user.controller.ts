@@ -32,7 +32,6 @@ import { UpdateConnectionRequestDto } from './dto/update-connection-request.dto'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-
   @Get('leaderboards')
   @ApiOperation({ summary: 'Get paginated leaderboard of top referrers' })
   @ApiResponse({
@@ -405,6 +404,4 @@ export class UserController {
       return badRequest({ message: error.message });
     }
   }
-
-
 }

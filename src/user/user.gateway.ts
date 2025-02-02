@@ -1,9 +1,12 @@
 // user.gateway.ts
 import { OnModuleInit } from '@nestjs/common';
-import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+} from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { User } from '@prisma/client'; // or your user interface
-
 
 @WebSocketGateway({
   cors: {
@@ -22,7 +25,7 @@ export class UserGateway implements OnModuleInit {
       body: {
         ...user,
         telegramId: user.telegramId.toString(),
-      }
+      },
     });
   }
 
