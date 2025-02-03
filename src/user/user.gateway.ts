@@ -19,6 +19,7 @@ import { User } from '@prisma/client'; // or your user interface
 // })
 
 @WebSocketGateway({
+  transports: ['polling'], 
   // namespace: '/api/user', 
   cors: {
     origin: '*',
