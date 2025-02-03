@@ -149,6 +149,20 @@ export class UserController {
     }
   }
 
+  @Get('/get-user/:referrerInviteLink')
+  @ApiOperation({ summary: 'Get User by referrerInviteLink ID' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUserRefferalId(@Param('referrerInviteLink') referrerInviteLink: string) {
+    try {
+      // Use BigInt instead of parseInt
+      const user = await this.userService.getUserByReferrerInviteLink(referrerInviteLink);
+      return ok(user);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
+  }
+
   @Post('heartbeat')
   @ApiOperation({ summary: 'User Heartbeat' })
   @ApiBody({ type: HeartbeatDto })

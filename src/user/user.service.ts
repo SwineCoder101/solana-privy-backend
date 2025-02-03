@@ -206,6 +206,23 @@ export class UserService {
     }
   }
 
+  async getUserByReferrerInviteLink(referrerInviteLink: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { inviteLink: referrerInviteLink },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with referrerInviteLink ${referrerInviteLink} not found`);
+      }
+
+      return user;
+    } catch (error) {
+      this.logger.error(`Error fetching user by referrerInviteLink: ${error.message}`);
+      throw error;
+    }
+  }
+
   async updateUserHeartbeat(userId: number): Promise<User> {
     try {
       const user = await this.prisma.user.update({
