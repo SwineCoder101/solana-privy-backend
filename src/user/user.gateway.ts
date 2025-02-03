@@ -8,12 +8,26 @@ import {
 import { Server } from 'socket.io';
 import { User } from '@prisma/client'; // or your user interface
 
+
+
+
+// @WebSocketGateway({
+//   namespace: '/api/user', 
+//   cors: {
+//     origin: '*',
+//   },
+// })
+
 @WebSocketGateway({
   namespace: '/api/user', 
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'], 
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
   },
 })
+
 export class UserGateway implements OnModuleInit {
   @WebSocketServer()
   server: Server;
