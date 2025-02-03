@@ -2,8 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BigIntInterceptor } from './interceptors/bigIntInterceptor';
+import { IoAdapter } from '@nestjs/platform-socket.io'; // ✅ Import IoAdapter
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+
+  // ✅ Set WebSocket Adapter
+  app.useWebSocketAdapter(new IoAdapter(app));
+
   // Set global prefix for all routes
   app.setGlobalPrefix('api');
   app.enableCors({
