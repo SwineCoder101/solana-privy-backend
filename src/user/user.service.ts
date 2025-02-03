@@ -83,7 +83,7 @@ export class UserService {
           //   referrerId: referrerId,
           // });
           console.log('time to call it', newUser);
-          this.userGateway.broadcastNewUser(newUser);
+          // this.userGateway.broadcastNewUser(newUser);
           return newUser;
         },
         { timeout: 10000 },
