@@ -81,18 +81,18 @@ export class UserController {
     }
   }
 
-  @Delete('delete-user/:id')
-  @ApiOperation({ summary: 'Delete User by ID' })
-  @ApiResponse({ status: 200, description: 'User deleted successfully' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async remove(@Param('id') id: string) {
-    try {
-      const user = await this.userService.remove(parseInt(id));
-      return ok(user);
-    } catch (error) {
-      return badRequest({ message: error.message });
-    }
-  }
+  // @Delete('delete-user/:id')
+  // @ApiOperation({ summary: 'Delete User by ID' })
+  // @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  // @ApiResponse({ status: 404, description: 'User not found' })
+  // async remove(@Param('id') id: string) {
+  //   try {
+  //     const user = await this.userService.remove(parseInt(id));
+  //     return ok(user);
+  //   } catch (error) {
+  //     return badRequest({ message: error.message });
+  //   }
+  // }
 
   @Get('all-users')
   @ApiOperation({ summary: 'Get All Users' })
