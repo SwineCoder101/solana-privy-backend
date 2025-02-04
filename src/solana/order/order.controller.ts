@@ -25,13 +25,15 @@ export class OrderController {
   @Post('create-bet')
   async createBet(@Body() dto: CreateBetDto) {
     this.logger.log('Creating bet with params: ', dto);
-    return this.orderService.createBet(dto.userId, {
+
+    const createBetResponse = await this.orderService.createBet(dto.userId, {
       amount: dto.amount,
       lowerBoundPrice: dto.lowerBoundPrice,
       upperBoundPrice: dto.upperBoundPrice,
       poolKey: new PublicKey(dto.poolKey),
       competitionKey: new PublicKey(dto.competitionKey),
     });
+    return createBetResponse;
   }
 
   @Get('getbet')

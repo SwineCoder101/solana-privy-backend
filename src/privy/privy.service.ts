@@ -31,9 +31,7 @@ export class PrivyService {
   }
 
   async getDelegatedWallet(userId: string): Promise<WalletWithMetadata> {
-    const user = await this.privyClient.getUserById(
-      'cm6gn06bq021n216ajbxqu5dh',
-    );
+    const user = await this.privyClient.getUserById(userId);
 
     this.logger.log('User: ', user);
 
@@ -65,6 +63,7 @@ export class PrivyService {
     chainId: string = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   ): Promise<string> {
     try {
+      this.logger.log('executing transaction for wallet: ', wallet.address);
       const signedTxResponse =
         await this.privyClient.walletApi.solana.signTransaction({
           address: wallet.address,
@@ -93,6 +92,7 @@ export class PrivyService {
 
       try {
         const hash = await connection.sendTransaction(signedVtx);
+        this.logger.log('Transaction sent successfully: ', hash);
         return hash;
       } catch (error) {
         if (error instanceof SendTransactionError) {

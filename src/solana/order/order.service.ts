@@ -37,10 +37,12 @@ export class OrderService {
         params.poolKey,
         params.competitionKey,
       );
-      return this.privyService.executeDelegatedActionWithWallet(
+
+      const txHash = this.privyService.executeDelegatedActionWithWallet(
         delegatedWallet,
         transaction,
       );
+      return { txHash };
     } catch (error) {
       this.logger.error('Error creating bet: ', error);
       throw error;
