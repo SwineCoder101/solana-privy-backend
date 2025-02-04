@@ -20,6 +20,7 @@ import privyConfig from './privy/privy.config';
 import { CompetitionModule } from './solana/competition/competition.module';
 import { OrderModule } from './solana/order/order.module';
 import { OracleModule } from './solana/oracle/oracle.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { OracleModule } from './solana/oracle/oracle.module';
     CompetitionModule,
     OrderModule,
     OracleModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService, S3Service, PrismaService],
