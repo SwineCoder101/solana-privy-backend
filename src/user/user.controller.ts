@@ -121,19 +121,22 @@ export class UserController {
     }
   }
 
-  @Get(':telegramId')
-  @ApiOperation({ summary: 'Get User by Telegram ID' })
+  @Get('get-user/referrerInviteLink/:referrerInviteLink')
+  @ApiOperation({ summary: 'Get User by referrerInviteLink ID' })
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async getUserByTelegramId(@Param('telegramId') telegramId: string) {
-    console.log('telegramId00000', telegramId);
+  async getUserRefferalId(@Param('referrerInviteLink') referrerInviteLink: string) {
     try {
-      const user = await this.userService.getUserByTelegramId(telegramId);
+      // Use BigInt instead of parseInt
+      const user = await this.userService.getUserByReferrerInviteLink(referrerInviteLink);
       return ok(user);
     } catch (error) {
       return badRequest({ message: error.message });
     }
   }
+
+
+ 
 
   @Get('/get-user/:userId')
   @ApiOperation({ summary: 'Get User by User ID' })
@@ -149,19 +152,6 @@ export class UserController {
     }
   }
 
-  @Get('/get-user/:referrerInviteLink')
-  @ApiOperation({ summary: 'Get User by referrerInviteLink ID' })
-  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async getUserRefferalId(@Param('referrerInviteLink') referrerInviteLink: string) {
-    try {
-      // Use BigInt instead of parseInt
-      const user = await this.userService.getUserByReferrerInviteLink(referrerInviteLink);
-      return ok(user);
-    } catch (error) {
-      return badRequest({ message: error.message });
-    }
-  }
 
   @Post('heartbeat')
   @ApiOperation({ summary: 'User Heartbeat' })
@@ -179,6 +169,21 @@ export class UserController {
     }
   }
 
+  @Get(':telegramId')
+  @ApiOperation({ summary: 'Get User by Telegram ID' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUserByTelegramId(@Param('telegramId') telegramId: string) {
+    console.log('telegramId00000', telegramId);
+    try {
+      const user = await this.userService.getUserByTelegramId(telegramId);
+      return ok(user);
+    } catch (error) {
+      return badRequest({ message: error.message });
+    }
+  }
+
+  
   @Post('upload-photo/:userId')
   @ApiOperation({ summary: 'Upload user profile photo' })
   @ApiConsumes('multipart/form-data')
