@@ -653,15 +653,14 @@ export class UserService {
 
   async getReferralsLeaderboard(page: number, limit: number) {
     const skip = (page - 1) * limit;
-
+  
     // 1) Get total number of *unique* referrers (for total pages)
-    //    Because groupBy(referrerId) returns an array of distinct referrers, the length = total distinct referrer IDs
     const allReferrers = await this.prisma.referral.groupBy({
       by: ['referrerId'],
     });
     const totalCount = allReferrers.length;
     const totalPages = Math.ceil(totalCount / limit);
-
+  
     if (totalCount === 0) {
       return {
         data: [],
@@ -672,7 +671,7 @@ export class UserService {
         },
       };
     }
-
+  
     const groupedReferrals = await this.prisma.referral.groupBy({
       by: ['referrerId'],
       _count: {
@@ -686,20 +685,34 @@ export class UserService {
       skip,
       take: limit,
     });
-
+  
     const referrerIds = groupedReferrals.map((r) => r.referrerId);
     const referrers = await this.prisma.user.findMany({
       where: { id: { in: referrerIds } },
+      select: {
+        id: true, // Include id for mapping
+        telegramId: true,
+        username: true,
+        firstName: true,
+        inviteLink: true,
+        createdAt: true,
+      },
     });
-
-    const userMap = new Map<number, User>();
+    
+    const userMap = new Map<number, any>();
     referrers.forEach((u) => userMap.set(u.id, u));
-
+  
     const data = groupedReferrals.map((item) => ({
-      user: userMap.get(item.referrerId),
+      user: {
+        telegramId: userMap.get(item.referrerId)?.telegramId,
+        username: userMap.get(item.referrerId)?.username,
+        firstName: userMap.get(item.referrerId)?.firstName,
+        inviteLink: userMap.get(item.referrerId)?.inviteLink,
+        createdAt: userMap.get(item.referrerId)?.createdAt,
+      },
       inviteCount: item._count.referrerId,
     }));
-
+  
     return {
       data,
       meta: {
