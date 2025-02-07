@@ -150,7 +150,12 @@ export class UserService {
 
   async getAllUsers() {
     try {
-      const result = await this.prisma.user.findMany();
+      const result = await this.prisma.user.findMany({
+        orderBy: {
+          createdAt: 'desc', // Sort by newest users first
+        },
+        take: 5, // Limit to the latest 5 users
+      });
       return result;
     } catch (error) {
       this.logger.error(`Error fetching all users: ${error.message}`);
