@@ -155,6 +155,13 @@ export class UserService {
           createdAt: 'desc', // Sort by newest users first
         },
         take: 5, // Limit to the latest 5 users
+        select: {
+          telegramId: true,
+          username: true,
+          firstName: true,
+          inviteLink: true,
+          createdAt: true,
+        },
       });
       return result;
     } catch (error) {
@@ -162,6 +169,7 @@ export class UserService {
       throw new Error('Error fetching users');
     }
   }
+  
 
   async getUserByTelegramId(telegramId: string) {
     console.log('telegramId-----', telegramId);
