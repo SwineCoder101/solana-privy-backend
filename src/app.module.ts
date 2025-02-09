@@ -21,6 +21,8 @@ import { CompetitionModule } from './solana/competition/competition.module';
 import { OrderModule } from './solana/order/order.module';
 import { OracleModule } from './solana/oracle/oracle.module';
 import { HealthModule } from './health/health.module';
+import { AdminModule } from './solana/admin/admin.module';
+import { SettlementModule } from './solana/settlement/settlement.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { HealthModule } from './health/health.module';
     OrderModule,
     OracleModule,
     HealthModule,
+    AdminModule,
+    SettlementModule,
   ],
   controllers: [AppController],
   providers: [AppService, S3Service, PrismaService],

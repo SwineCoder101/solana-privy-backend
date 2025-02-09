@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/horse_race.json`.
  */
 export type HorseRace = {
-    "address": "3U8ZsW8cd3GNcu69AhksaNEoeBCh8sHywvCHbm7mxaHz";
+    "address": "BSKPMTGPrLXDdrHBQSBhH33dqPNDtyTcuMh8BG9Ce1aa";
     "metadata": {
         "name": "horseRace";
         "version": "0.1.0";
@@ -308,9 +308,6 @@ export type HorseRace = {
         },
         {
             "name": "runCreatePoolOracleTransformer";
-            "docs": [
-                "Create a Pool Oracle Transformer"
-            ];
             "discriminator": [
                 200,
                 65,
@@ -384,25 +381,51 @@ export type HorseRace = {
             ];
         },
         {
-            "name": "runSettlePool";
+            "name": "runSettlePoolByPrice";
             "docs": [
                 "Settle a Pool"
             ];
             "discriminator": [
-                96,
-                137,
-                173,
-                253,
-                147,
-                165,
-                192,
-                218
+                171,
+                89,
+                52,
+                200,
+                177,
+                251,
+                136,
+                83
             ];
-            "accounts": [];
+            "accounts": [
+                {
+                    "name": "authority";
+                    "writable": true;
+                    "signer": true;
+                },
+                {
+                    "name": "pool";
+                    "writable": true;
+                },
+                {
+                    "name": "competition";
+                    "writable": true;
+                },
+                {
+                    "name": "treasury";
+                    "writable": true;
+                },
+                {
+                    "name": "systemProgram";
+                    "address": "11111111111111111111111111111111";
+                }
+            ];
             "args": [
                 {
-                    "name": "competitionKey";
-                    "type": "pubkey";
+                    "name": "lowerBoundPrice";
+                    "type": "u64";
+                },
+                {
+                    "name": "upperBoundPrice";
+                    "type": "u64";
                 }
             ];
         },
@@ -597,23 +620,8 @@ export type HorseRace = {
     "errors": [
         {
             "code": 6000;
-            "name": "invalidTimeRange";
-            "msg": "Invalid time range.";
-        },
-        {
-            "code": 6001;
-            "name": "invalidOracleId";
-            "msg": "Invalid oracle id provided, please check the latest oracle id";
-        },
-        {
-            "code": 6002;
-            "name": "oracleInactive";
-            "msg": "Oracle is inactive.";
-        },
-        {
-            "code": 6003;
-            "name": "outsideOracleTimeRange";
-            "msg": "Oracle is outside the time range.";
+            "name": "unauthorized";
+            "msg": "Unauthorized: Not a whitelisted admin or deployer.";
         }
     ];
     "types": [
