@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ProgramService } from '../program/program.service';
-import { Keypair, VersionedTransaction } from '@solana/web3.js';
+import { Keypair, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { Wallet, web3 } from '@coral-xyz/anchor';
 
 @Injectable()
@@ -101,7 +101,20 @@ export class AdminService {
     }
   }
 
-  getAdminPublicKey(): string {
+  async executeTransaction(transaction: VersionedTransaction): Promise<string> {
+    const signature = await this.signAndSendTransaction(transaction);
+    const success = await this.confirmTransaction(signature);
+    if (!success) {
+      throw new Error('Transaction failed');
+    }
+    return signature;
+  }
+
+  getAdminPublicKeyString(): string {
     return this.adminKeypair.publicKey.toString();
+  }
+
+  getAdminPublicKey(): PublicKey {
+    return this.adminKeypair.publicKey;
   }
 }

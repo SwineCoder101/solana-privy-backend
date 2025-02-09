@@ -1,66 +1,60 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
-import { CompetitionService } from './competition.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { CompetitionPoolParams } from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
+import { AdminService } from '../admin/admin.service';
+import { CompetitionService } from './competition.service';
+import { CreateCompetitionDto } from './dto/create-competition.dto';
 
-class CreateCompetitionDto {
-  competitionHash: string;
-  tokenA: string;
-  priceFeedId: string;
-  adminKeys: string[];
-  houseCutFactor: number;
-  minPayoutRatio: number;
-  interval: number;
-  startTime: number;
-  endTime: number;
-  treasury: string;
-  userId: string;
-}
-
-class UpdateCompetitionDto {
-  userId: string;
-  competitionKey: string;
-  tokenA: string;
-  priceFeedId: string;
-  adminKeys: string[];
-  houseCutFactor: number;
-  minPayoutRatio: number;
-  interval: number;
-  startTime: number;
-  endTime: number;
-}
+// class UpdateCompetitionDto {
+//   competitionKey: string;
+//   treasury: string;
+//   tokenA: string;
+//   priceFeedId: string;
+//   adminKeys: string[];
+//   houseCutFactor: number;
+//   minPayoutRatio: number;
+//   interval: number;
+//   startTime: number;
+//   endTime: number;
+// }
 
 @Controller('competition')
 export class CompetitionController {
-  constructor(private readonly competitionService: CompetitionService) {}
+  constructor(
+    private readonly competitionService: CompetitionService,
+    private readonly adminService: AdminService,
+  ) {}
 
-  @Post('create')
-  async createCompetition(@Body() dto: CreateCompetitionDto) {
-    return this.competitionService.createCompetitionWithPools(dto.userId, {
-      competitionHash: new PublicKey(dto.competitionHash),
+  @Post()
+  async create(@Body() dto: CreateCompetitionDto) {
+    const params: CompetitionPoolParams = {
+      admin: this.adminService.getAdminPublicKey(),
       tokenA: new PublicKey(dto.tokenA),
       priceFeedId: dto.priceFeedId,
-      adminKeys: dto.adminKeys.map((key) => new PublicKey(key)),
+      adminKeys: [this.adminService.getAdminPublicKey()],
       houseCutFactor: dto.houseCutFactor,
       minPayoutRatio: dto.minPayoutRatio,
       interval: dto.interval,
       startTime: dto.startTime,
       endTime: dto.endTime,
       treasury: new PublicKey(dto.treasury),
-    });
+    };
+
+    return this.competitionService.createCompetitionWithPools(params);
   }
 
-  @Put('update')
-  async updateCompetition(@Body() dto: UpdateCompetitionDto) {
-    return this.competitionService.updateCompetition(dto.userId, {
-      competitionKey: new PublicKey(dto.competitionKey),
-      houseCutFactor: dto.houseCutFactor,
-      minPayoutRatio: dto.minPayoutRatio,
-      interval: dto.interval,
-      startTime: dto.startTime,
-      endTime: dto.endTime,
-      tokenA: new PublicKey(dto.tokenA),
-      priceFeedId: dto.priceFeedId,
-      adminKeys: [],
-    });
-  }
+  // @Put('update')
+  // async updateCompetition(@Body() dto: UpdateCompetitionDto) {
+  //   return this.competitionService.updateCompetition({
+  //     competitionKey: new PublicKey(dto.competitionKey),
+  //     houseCutFactor: dto.houseCutFactor,
+  //     minPayoutRatio: dto.minPayoutRatio,
+  //     interval: dto.interval,
+  //     startTime: dto.startTime,
+  //     endTime: dto.endTime,
+  //     tokenA: new PublicKey(dto.tokenA),
+  //     priceFeedId: dto.priceFeedId,
+  //     adminKeys: [],
+  //   });
+  // }
 }

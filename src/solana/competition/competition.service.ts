@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { updateCompetitionInstruction } from '@solana-sdk/instructions/admin';
+import {
+  CompetitionPoolParams,
+  createCompetitionWithPoolsEntry,
+} from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
+import { AdminService } from '../admin/admin.service';
 import { ProgramService } from '../program/program.service';
-import {
-  createCompetitionWithPools,
-  updateCompetitionInstruction,
-} from '@solana-sdk/instructions/admin';
 
 @Injectable()
 export class CompetitionService {
@@ -14,58 +16,31 @@ export class CompetitionService {
     private configService: ConfigService,
     private privyService: PrivyService,
     private programService: ProgramService,
+    private adminService: AdminService,
   ) {}
 
-  async createCompetitionWithPools(
-    userId: string,
-    params: {
-      competitionHash: PublicKey;
-      tokenA: PublicKey;
-      priceFeedId: string;
-      adminKeys: PublicKey[];
-      houseCutFactor: number;
-      minPayoutRatio: number;
-      interval: number;
-      startTime: number;
-      endTime: number;
-      treasury: PublicKey;
-    },
-  ) {
-    const admin = new PublicKey(
-      this.configService.get('SOLANA_PUBLIC_PROGRAM_ID'),
-    );
+  async createCompetitionWithPools(params: CompetitionPoolParams) {
+    const { competitionTx, poolKeys, poolTxs } =
+      await createCompetitionWithPoolsEntry(
+        this.programService.getProgram() as any,
+        params,
+      );
 
-    const response = await createCompetitionWithPools(
-      this.programService.getProgram() as any,
-      admin,
-      params.competitionHash,
-      params.tokenA,
-      params.priceFeedId,
-      params.adminKeys,
-      params.houseCutFactor,
-      params.minPayoutRatio,
-      params.interval,
-      params.startTime,
-      params.endTime,
-      params.treasury,
-    );
-
-    // Execute each transaction using Privy
-    const competitionTxHash = await this.privyService.executeDelegatedAction(
-      userId,
-      response.competitionTx,
-    );
+    const competitionTxHash =
+      await this.adminService.executeTransaction(competitionTx);
 
     const poolTxHashes = await Promise.all(
-      response.poolTxs.map((tx) =>
-        this.privyService.executeDelegatedAction(userId, tx),
-      ),
+      poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
+    );
+
+    await Promise.all(
+      poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
     );
 
     return {
       competitionTxHash,
       poolTxHashes,
-      poolKeys: response.poolKeys,
+      poolKeys,
     };
   }
 
