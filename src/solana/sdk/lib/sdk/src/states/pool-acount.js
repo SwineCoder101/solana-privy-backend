@@ -8,6 +8,8 @@ exports.getBalanceOfPool = getBalanceOfPool;
 exports.getPoolAccount = getPoolAccount;
 exports.getPoolAccounts = getPoolAccounts;
 exports.getPoolBalance = getPoolBalance;
+exports.getAllPools = getAllPools;
+exports.getFirstPool = getFirstPool;
 exports.getPoolAccountsFromCompetition = getPoolAccountsFromCompetition;
 exports.getAllPoolDataByCompetition = getAllPoolDataByCompetition;
 exports.getAllPoolDataByUser = getAllPoolDataByUser;
@@ -58,9 +60,17 @@ async function getPoolAccounts(program, poolPubkeys) {
 async function getPoolBalance(poolPubkey, program) {
     return program.provider.connection.getBalance(poolPubkey);
 }
+async function getAllPools(program) {
+    const pools = await program.account.pool.all();
+    return pools.map((pool) => convertProgramToPoolData(pool));
+}
+async function getFirstPool(program) {
+    const pools = await getAllPools(program);
+    return pools.sort((a, b) => a.startTime - b.startTime)[0];
+}
 async function getPoolAccountsFromCompetition(program, competitionKey) {
     const pools = await program.account.pool.all();
-    return pools.filter(pool => pool.account.competitionKey === competitionKey);
+    return pools.filter(pool => pool.account.competitionKey.toBase58() === competitionKey.toBase58());
 }
 async function getAllPoolDataByCompetition(program, competition) {
     const pools = await program.account.pool.all();

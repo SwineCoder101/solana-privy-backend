@@ -301,25 +301,125 @@
             ]
         },
         {
-            "name": "run_settle_pool",
+            "name": "run_create_pool_oracle_transformer",
+            "discriminator": [
+                200,
+                65,
+                121,
+                126,
+                37,
+                233,
+                200,
+                41
+            ],
+            "accounts": [
+                {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "pool_oracle",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    111,
+                                    114,
+                                    97,
+                                    99,
+                                    108,
+                                    101
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "pool"
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "price_feed"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "pool",
+                    "type": "pubkey"
+                },
+                {
+                    "name": "price_feed",
+                    "type": "string"
+                },
+                {
+                    "name": "start_time",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_time",
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "run_settle_pool_by_price",
             "docs": [
                 "Settle a Pool"
             ],
             "discriminator": [
-                96,
-                137,
-                173,
-                253,
-                147,
-                165,
-                192,
-                218
+                171,
+                89,
+                52,
+                200,
+                177,
+                251,
+                136,
+                83
             ],
-            "accounts": [],
+            "accounts": [
+                {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "pool",
+                    "writable": true
+                },
+                {
+                    "name": "competition",
+                    "writable": true
+                },
+                {
+                    "name": "treasury",
+                    "writable": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
             "args": [
                 {
-                    "name": "competition_key",
-                    "type": "pubkey"
+                    "name": "lower_bound_price",
+                    "type": "u64"
+                },
+                {
+                    "name": "upper_bound_price",
+                    "type": "u64"
                 }
             ]
         },
@@ -381,6 +481,67 @@
                     "type": "u64"
                 }
             ]
+        },
+        {
+            "name": "run_update_pool_price_feed",
+            "docs": [
+                "Update a Pool Price Feed"
+            ],
+            "discriminator": [
+                231,
+                14,
+                29,
+                101,
+                113,
+                15,
+                145,
+                140
+            ],
+            "accounts": [
+                {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "pool_oracle",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    111,
+                                    114,
+                                    97,
+                                    99,
+                                    108,
+                                    101
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool_oracle.pool",
+                                "account": "PoolOracleTransformer"
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool_oracle.price_feed",
+                                "account": "PoolOracleTransformer"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "price_update"
+                }
+            ],
+            "args": []
         }
     ],
     "accounts": [
@@ -422,28 +583,39 @@
                 109,
                 188
             ]
+        },
+        {
+            "name": "PoolOracleTransformer",
+            "discriminator": [
+                165,
+                246,
+                143,
+                134,
+                31,
+                187,
+                230,
+                30
+            ]
+        },
+        {
+            "name": "PriceUpdateV2",
+            "discriminator": [
+                34,
+                241,
+                35,
+                99,
+                157,
+                126,
+                244,
+                205
+            ]
         }
     ],
     "errors": [
         {
             "code": 6000,
-            "name": "InvalidTimeRange",
-            "msg": "Invalid time range."
-        },
-        {
-            "code": 6001,
-            "name": "InvalidOracleId",
-            "msg": "Invalid oracle id provided, please check the latest oracle id"
-        },
-        {
-            "code": 6002,
-            "name": "OracleInactive",
-            "msg": "Oracle is inactive."
-        },
-        {
-            "code": 6003,
-            "name": "OutsideOracleTimeRange",
-            "msg": "Oracle is outside the time range."
+            "name": "Unauthorized",
+            "msg": "Unauthorized: Not a whitelisted admin or deployer."
         }
     ],
     "types": [
@@ -570,6 +742,187 @@
                     {
                         "name": "treasury",
                         "type": "pubkey"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PoolOracleTransformer",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "pool",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "max_price",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "min_price",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "price_feed",
+                        "type": "string"
+                    },
+                    {
+                        "name": "active",
+                        "type": "bool"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PriceFeedMessage",
+            "repr": {
+                "kind": "c"
+            },
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "feed_id",
+                        "docs": [
+                            "`FeedId` but avoid the type alias because of compatibility issues with Anchor's `idl-build` feature."
+                        ],
+                        "type": {
+                            "array": [
+                                "u8",
+                                32
+                            ]
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "conf",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "exponent",
+                        "type": "i32"
+                    },
+                    {
+                        "name": "publish_time",
+                        "docs": [
+                            "The timestamp of this price update in seconds"
+                        ],
+                        "type": "i64"
+                    },
+                    {
+                        "name": "prev_publish_time",
+                        "docs": [
+                            "The timestamp of the previous price update. This field is intended to allow users to",
+                            "identify the single unique price update for any moment in time:",
+                            "for any time t, the unique update is the one such that prev_publish_time < t <= publish_time.",
+                            "",
+                            "Note that there may not be such an update while we are migrating to the new message-sending logic,",
+                            "as some price updates on pythnet may not be sent to other chains (because the message-sending",
+                            "logic may not have triggered). We can solve this problem by making the message-sending mandatory",
+                            "(which we can do once publishers have migrated over).",
+                            "",
+                            "Additionally, this field may be equal to publish_time if the message is sent on a slot where",
+                            "where the aggregation was unsuccesful. This problem will go away once all publishers have",
+                            "migrated over to a recent version of pyth-agent."
+                        ],
+                        "type": "i64"
+                    },
+                    {
+                        "name": "ema_price",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "ema_conf",
+                        "type": "u64"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PriceUpdateV2",
+            "docs": [
+                "A price update account. This account is used by the Pyth Receiver program to store a verified price update from a Pyth price feed.",
+                "It contains:",
+                "- `write_authority`: The write authority for this account. This authority can close this account to reclaim rent or update the account to contain a different price update.",
+                "- `verification_level`: The [`VerificationLevel`] of this price update. This represents how many Wormhole guardian signatures have been verified for this price update.",
+                "- `price_message`: The actual price update.",
+                "- `posted_slot`: The slot at which this price update was posted."
+            ],
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "write_authority",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "verification_level",
+                        "type": {
+                            "defined": {
+                                "name": "VerificationLevel"
+                            }
+                        }
+                    },
+                    {
+                        "name": "price_message",
+                        "type": {
+                            "defined": {
+                                "name": "PriceFeedMessage"
+                            }
+                        }
+                    },
+                    {
+                        "name": "posted_slot",
+                        "type": "u64"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "VerificationLevel",
+            "docs": [
+                "Pyth price updates are bridged to all blockchains via Wormhole.",
+                "Using the price updates on another chain requires verifying the signatures of the Wormhole guardians.",
+                "The usual process is to check the signatures for two thirds of the total number of guardians, but this can be cumbersome on Solana because of the transaction size limits,",
+                "so we also allow for partial verification.",
+                "",
+                "This enum represents how much a price update has been verified:",
+                "- If `Full`, we have verified the signatures for two thirds of the current guardians.",
+                "- If `Partial`, only `num_signatures` guardian signatures have been checked.",
+                "",
+                "# Warning",
+                "Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update."
+            ],
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "name": "Partial",
+                        "fields": [
+                            {
+                                "name": "num_signatures",
+                                "type": "u8"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Full"
                     }
                 ]
             }

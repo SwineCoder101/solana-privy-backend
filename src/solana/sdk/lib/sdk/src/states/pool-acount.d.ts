@@ -37,6 +37,8 @@ export declare function getPoolAccounts(program: Program<HorseRace>, poolPubkeys
     treasury: PublicKey;
 } | null)[]>;
 export declare function getPoolBalance(poolPubkey: PublicKey, program: Program<HorseRace>): Promise<number>;
+export declare function getAllPools(program: Program<HorseRace>): Promise<PoolData[]>;
+export declare function getFirstPool(program: Program<HorseRace>): Promise<PoolData>;
 export declare function getPoolAccountsFromCompetition(program: Program<HorseRace>, competitionKey: PublicKey): Promise<ProgramAccount<{
     poolHash: PublicKey;
     competitionKey: PublicKey;

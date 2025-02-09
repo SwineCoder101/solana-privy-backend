@@ -47,5 +47,7 @@ export declare function getBetAccount(program: Program<HorseRace>, betPubkey: Pu
     status: any;
 }>;
 export declare function getBetAccountsForUser(program: Program<HorseRace>, userPubkey: PublicKey): Promise<BetData[]>;
+export declare function getAllBetAccounts(program: Program<HorseRace>): Promise<BetData[]>;
+export declare function getActiveBetAccountsForPool(program: Program<HorseRace>, poolPubkey: PublicKey): Promise<BetData[]>;
 export declare function getBetAccountsForPool(program: Program<HorseRace>, poolPubkey: PublicKey): Promise<BetData[]>;
 export declare function getAllBetDataByUser(program: Program<HorseRace>, user: PublicKey): Promise<BetData[]>;

@@ -8,6 +8,8 @@ exports.convertProgramToBetData = convertProgramToBetData;
 exports.getBetData = getBetData;
 exports.getBetAccount = getBetAccount;
 exports.getBetAccountsForUser = getBetAccountsForUser;
+exports.getAllBetAccounts = getAllBetAccounts;
+exports.getActiveBetAccountsForPool = getActiveBetAccountsForPool;
 exports.getBetAccountsForPool = getBetAccountsForPool;
 exports.getAllBetDataByUser = getAllBetDataByUser;
 const anchor_1 = require("@coral-xyz/anchor");
@@ -78,13 +80,10 @@ async function getBetAccount(program, betPubkey) {
 async function getBetAccountsForUser(program, userPubkey) {
     // Get all bet accounts
     const accounts = await program.account.bet.all();
-    console.log('Total bet accounts:', accounts.length);
-    console.log('Looking for user:', userPubkey.toBase58());
     // Filter accounts where user matches
     const betAccounts = accounts.filter((account) => {
         const accountUser = account.account.user.toBase58();
         const matches = accountUser === userPubkey.toBase58();
-        console.log('Comparing account user:', accountUser, 'with target:', userPubkey.toBase58(), 'matches:', matches);
         return matches;
     });
     return betAccounts.map(account => ({
@@ -92,19 +91,23 @@ async function getBetAccountsForUser(program, userPubkey) {
         publicKey: account.publicKey.toBase58()
     }));
 }
+async function getAllBetAccounts(program) {
+    const accounts = await program.account.bet.all();
+    return accounts.map(account => convertProgramToBetData(account.account));
+}
+async function getActiveBetAccountsForPool(program, poolPubkey) {
+    const accounts = await getBetAccountsForPool(program, poolPubkey);
+    return accounts.filter(account => account.status === BetStatus.Active);
+}
 async function getBetAccountsForPool(program, poolPubkey) {
     // Get all bet accounts
     const accounts = await program.account.bet.all();
-    console.log('Total bet accounts:', accounts.length);
-    console.log('Looking for pool:', poolPubkey.toBase58());
     // Filter accounts where poolKey matches
     const betAccounts = accounts.filter((account) => {
         const accountPoolKey = account.account.poolKey.toBase58();
         const matches = accountPoolKey === poolPubkey.toBase58();
-        console.log('Comparing account pool key:', accountPoolKey, 'with target:', poolPubkey.toBase58(), 'matches:', matches);
         return matches;
     });
-    console.log('Found bet accounts for pool:', betAccounts.length);
     betAccounts.forEach(acc => {
         console.log('Account:', {
             pubkey: acc.publicKey.toBase58(),

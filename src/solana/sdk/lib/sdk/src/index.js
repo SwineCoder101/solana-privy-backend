@@ -36,13 +36,22 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HORSE_RACE_PROGRAM = exports.HORSE_RACE_PROGRAM_ID = exports.IDL = void 0;
-const HorseRaceIDL = __importStar(require("./idl/horse_race.json"));
-const web3_js_1 = require("@solana/web3.js");
+exports.HORSE_RACE_PROGRAM_ID = exports.IDL = void 0;
+exports.getProgram = getProgram;
+exports.createProvider = createProvider;
 const anchor_1 = require("@coral-xyz/anchor");
+const web3_js_1 = require("@solana/web3.js");
+const HorseRaceIDL = __importStar(require("./idl/horse_race.json"));
 __exportStar(require("./instructions/admin"), exports);
 __exportStar(require("./states"), exports);
 __exportStar(require("./utils"), exports);
 exports.IDL = HorseRaceIDL;
 exports.HORSE_RACE_PROGRAM_ID = new web3_js_1.PublicKey(HorseRaceIDL.address);
-exports.HORSE_RACE_PROGRAM = new anchor_1.Program(exports.IDL);
+// Instead of creating the program directly, create a function to get the program with a provider
+function getProgram(provider) {
+    return new anchor_1.Program(exports.IDL, provider);
+}
+// Helper function to create provider if needed
+function createProvider(connection, wallet) {
+    return new anchor_1.AnchorProvider(connection, wallet, { commitment: 'confirmed' });
+}
