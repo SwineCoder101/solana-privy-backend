@@ -30,7 +30,8 @@ export class SettlementService {
         upperBoundPrice,
       );
 
-      const signature = await this.adminService.executeTransaction(vtx);
+      const signature =
+        await this.adminService.signSendAndConfirmTransaction(vtx);
 
       return {
         signature,

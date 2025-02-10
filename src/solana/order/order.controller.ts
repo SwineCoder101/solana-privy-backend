@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
-import { OrderService } from './order.service';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
+import { OrderService } from './order.service';
 
 class CreateBetDto {
   userId: string;
@@ -34,11 +34,6 @@ export class OrderController {
       competitionKey: new PublicKey(dto.competitionKey),
     });
     return createBetResponse;
-  }
-
-  @Get('getbet')
-  async getBet() {
-    return 'hello';
   }
 
   @Post('cancel-bet')
