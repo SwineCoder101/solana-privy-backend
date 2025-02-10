@@ -33,6 +33,8 @@ export class SettlementService {
       const signature =
         await this.adminService.signSendAndConfirmTransaction(vtx);
 
+      this.logger.log('Settled pool: ', poolKey.toBase58());
+
       return {
         signature,
       };
