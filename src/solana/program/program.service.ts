@@ -1,9 +1,9 @@
 import { AnchorProvider, Program, Wallet } from '@coral-xyz/anchor';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Connection, Keypair } from '@solana/web3.js';
-import { IDL } from '@solana-sdk/idl';
 import { HorseRace } from '@solana-sdk/types/horse_race';
+import { IDL } from '@solana-sdk/index';
 
 @Injectable()
 export class ProgramService implements OnModuleInit {
@@ -11,10 +11,12 @@ export class ProgramService implements OnModuleInit {
   private provider: AnchorProvider;
   private connection: Connection;
   private adminKeypair: Keypair;
-
+  private logger = new Logger(ProgramService.name);
+  private wallet: Wallet;
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
+    this.logger.log('Initializing program service');
     this.connection = new Connection(
       this.configService.get<string>('SOLANA_RPC_URL'),
       'confirmed',
@@ -26,10 +28,10 @@ export class ProgramService implements OnModuleInit {
     const privateKey = new Uint8Array(JSON.parse(privateKeyString));
     this.adminKeypair = Keypair.fromSecretKey(privateKey);
 
-    const wallet = new Wallet(this.adminKeypair);
+    this.wallet = new Wallet(this.adminKeypair);
 
     // Create the provider
-    const provider = new AnchorProvider(this.connection, wallet, {
+    const provider = new AnchorProvider(this.connection, this.wallet, {
       commitment: 'confirmed',
     });
 
@@ -41,6 +43,10 @@ export class ProgramService implements OnModuleInit {
 
   getConnection(): Connection {
     return this.connection;
+  }
+
+  getWallet(): Wallet {
+    return this.wallet;
   }
 
   getProgram(): Program<HorseRace> {

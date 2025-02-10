@@ -30,7 +30,10 @@ export class SettlementService {
         upperBoundPrice,
       );
 
-      const signature = await this.adminService.executeTransaction(vtx);
+      const signature =
+        await this.adminService.signSendAndConfirmTransaction(vtx);
+
+      this.logger.log('Settled pool: ', poolKey.toBase58());
 
       return {
         signature,

@@ -1,47 +1,65 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { updateCompetitionInstruction } from '@solana-sdk/instructions/admin';
 import {
   CompetitionPoolParams,
   createCompetitionWithPoolsEntry,
 } from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
-import { PrivyService } from '../../privy/privy.service';
 import { AdminService } from '../admin/admin.service';
-import { ProgramService } from '../program/program.service';
 
 @Injectable()
-export class CompetitionService {
-  constructor(
-    private configService: ConfigService,
-    private privyService: PrivyService,
-    private programService: ProgramService,
-    private adminService: AdminService,
-  ) {}
+export class CompetitionService implements OnModuleInit {
+  private readonly logger = new Logger(CompetitionService.name);
+
+  constructor(private readonly adminService: AdminService) {}
+  onModuleInit() {
+    this.logger.log('Initializing competition service');
+  }
 
   async createCompetitionWithPools(params: CompetitionPoolParams) {
-    const { competitionTx, poolKeys, poolTxs } =
-      await createCompetitionWithPoolsEntry(
-        this.programService.getProgram() as any,
-        params,
+    try {
+      this.logger.log('Creating competition with pools');
+      this.logger.log(
+        'Provider: ',
+        this.adminService.getProgram().provider.connection.rpcEndpoint,
       );
+      const { competitionTx, poolKeys, poolTxs } =
+        await createCompetitionWithPoolsEntry(
+          this.adminService.getProgram() as any,
+          params,
+        );
+      this.logger.log('Competition tx: ', competitionTx);
 
-    const competitionTxHash =
-      await this.adminService.executeTransaction(competitionTx);
+      const competitionTxHash =
+        await this.adminService.signSendAndConfirmTransaction(competitionTx);
 
-    const poolTxHashes = await Promise.all(
-      poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
-    );
+      // const poolTxHashes = await Promise.all(
+      //   poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
+      // );
 
-    await Promise.all(
-      poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
-    );
+      const poolTxHashes = [];
+      poolTxs.forEach(async (tx) => {
+        const sig = await this.adminService.signAndSendTransaction(tx);
+        this.logger.log('Pool tx hash: ', sig);
+        await this.adminService.confirmTransaction(sig);
+        poolTxHashes.push(sig);
+      });
 
-    return {
-      competitionTxHash,
-      poolTxHashes,
-      poolKeys,
-    };
+      // this.logger.log('Competition tx hash: ', competitionTxHash);
+      // this.logger.log('Pool tx hashes: ', poolTxHashes);
+
+      // await Promise.all(
+      //   poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
+      // );
+
+      return {
+        competitionTxHash,
+        poolTxHashes,
+        poolKeys: poolKeys.map((key) => key.toBase58()),
+      };
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 
   async updateCompetition(
@@ -58,10 +76,8 @@ export class CompetitionService {
       endTime: number;
     },
   ) {
-    const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
-
     const transaction = await updateCompetitionInstruction(
-      this.programService.getProgram() as any,
+      this.adminService.getProgram() as any,
       params.competitionKey,
       params.tokenA,
       params.priceFeedId,
@@ -73,9 +89,6 @@ export class CompetitionService {
       params.endTime,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(
-      delegatedWallet,
-      transaction,
-    );
+    return transaction;
   }
 }
