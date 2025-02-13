@@ -15,6 +15,10 @@ export interface BetData {
     poolKey: string;
     competition: string;
     status: BetStatus;
+    leverage: number;
+    leverageMultiplier: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 export type BetProgramData = {
     user: PublicKey;
@@ -35,7 +39,7 @@ export type StatusEnumProgram = {
 export declare function convertBetToProgramData(betData: BetData): BetProgramData;
 export declare function convertToBetStatus(status: StatusEnumProgram): BetStatus;
 export declare function convertToBetProgramStatus(status: BetStatus): StatusEnumProgram;
-export declare function convertProgramToBetData(programData: BetProgramData): BetData;
+export declare function convertProgramToBetData(account: any): Promise<BetData>;
 export declare function getBetData(program: Program<HorseRace>, betPubkey: PublicKey): Promise<BetData>;
 export declare function getBetAccount(program: Program<HorseRace>, betPubkey: PublicKey): Promise<{
     user: PublicKey;
@@ -45,6 +49,10 @@ export declare function getBetAccount(program: Program<HorseRace>, betPubkey: Pu
     upperBoundPrice: BN;
     poolKey: PublicKey;
     status: any;
+    leverage: BN;
+    leverageMultiplier: BN;
+    createdAt: BN;
+    updatedAt: BN;
 }>;
 export declare function getBetAccountsForUser(program: Program<HorseRace>, userPubkey: PublicKey): Promise<BetData[]>;
 export declare function getAllBetAccounts(program: Program<HorseRace>): Promise<BetData[]>;

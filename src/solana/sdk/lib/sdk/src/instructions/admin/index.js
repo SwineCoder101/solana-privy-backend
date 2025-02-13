@@ -16,3 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./create-competition"), exports);
 __exportStar(require("./update-competition"), exports);
+__exportStar(require("./create-pool"), exports);
+__exportStar(require("./create-treasury"), exports);
+__exportStar(require("./deposit-to-treasury"), exports);
+__exportStar(require("./withdraw-from-treasury"), exports);

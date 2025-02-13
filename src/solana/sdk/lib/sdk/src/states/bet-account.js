@@ -20,6 +20,17 @@ var BetStatus;
     BetStatus[BetStatus["Cancelled"] = 1] = "Cancelled";
     BetStatus[BetStatus["Settled"] = 2] = "Settled";
 })(BetStatus || (exports.BetStatus = BetStatus = {}));
+const ACCOUNT_DISCRIMINATOR_SIZE = 8;
+const PUBLIC_KEY_SIZE = 32;
+const U64_SIZE = 8;
+function getPoolKeyOffset() {
+    return ACCOUNT_DISCRIMINATOR_SIZE + // Account discriminator
+        PUBLIC_KEY_SIZE + // user
+        U64_SIZE + // amount
+        PUBLIC_KEY_SIZE + // competition
+        U64_SIZE + // lower_bound_price
+        U64_SIZE; // upper_bound_price
+}
 function convertBetToProgramData(betData) {
     return {
         user: new web3_js_1.PublicKey(betData.user),
@@ -57,70 +68,100 @@ function convertToBetProgramStatus(status) {
             throw new Error("Unknown BetStatus");
     }
 }
-function convertProgramToBetData(programData) {
+async function convertProgramToBetData(account) {
     return {
-        publicKey: programData.user.toString(),
-        user: programData.user.toString(),
-        amount: typeof programData.amount === 'number' ? programData.amount : programData.amount.toNumber(),
-        lowerBoundPrice: typeof programData.lowerBoundPrice === 'number' ? programData.lowerBoundPrice : programData.lowerBoundPrice.toNumber(),
-        upperBoundPrice: typeof programData.upperBoundPrice === 'number' ? programData.upperBoundPrice : programData.upperBoundPrice.toNumber(),
-        poolKey: programData.poolKey.toString(),
-        competition: programData.competition.toString(),
-        status: convertToBetStatus(programData.status),
+        publicKey: account.publicKey?.toString() || '',
+        user: account.user.toString(),
+        amount: account.amount.toNumber(),
+        lowerBoundPrice: account.lowerBoundPrice.toNumber(),
+        upperBoundPrice: account.upperBoundPrice.toNumber(),
+        poolKey: account.poolKey.toString(),
+        competition: account.competition.toString(),
+        status: convertToBetStatus(account.status),
+        leverage: account.leverage.toNumber(),
+        leverageMultiplier: account.leverageMultiplier.toNumber(),
+        createdAt: new Date(account.createdAt.toNumber() * 1000),
+        updatedAt: new Date(account.updatedAt.toNumber() * 1000),
     };
 }
 // ------------------------------------------------------- Data Fetchers
 async function getBetData(program, betPubkey) {
-    const fetchedData = await program.account.bet.fetch(betPubkey);
-    return convertProgramToBetData(fetchedData);
+    const betAccount = await program.account.bet.fetch(betPubkey);
+    return {
+        publicKey: betPubkey.toString(),
+        user: betAccount.user.toString(),
+        amount: betAccount.amount.toNumber(),
+        competition: betAccount.competition.toString(),
+        lowerBoundPrice: betAccount.lowerBoundPrice.toNumber(),
+        upperBoundPrice: betAccount.upperBoundPrice.toNumber(),
+        poolKey: betAccount.poolKey.toString(),
+        status: convertToBetStatus(betAccount.status),
+        leverage: betAccount.leverage.toNumber(),
+        leverageMultiplier: betAccount.leverageMultiplier.toNumber(),
+        createdAt: new Date(betAccount.createdAt.toNumber() * 1000),
+        updatedAt: new Date(betAccount.updatedAt.toNumber() * 1000),
+    };
 }
 async function getBetAccount(program, betPubkey) {
     return program.account.bet.fetch(betPubkey);
 }
 async function getBetAccountsForUser(program, userPubkey) {
-    // Get all bet accounts
-    const accounts = await program.account.bet.all();
-    // Filter accounts where user matches
-    const betAccounts = accounts.filter((account) => {
-        const accountUser = account.account.user.toBase58();
-        const matches = accountUser === userPubkey.toBase58();
-        return matches;
-    });
-    return betAccounts.map(account => ({
-        ...convertProgramToBetData(account.account),
-        publicKey: account.publicKey.toBase58()
+    const accounts = await program.account.bet.all([
+        {
+            memcmp: {
+                offset: 8,
+                bytes: userPubkey.toBase58(),
+            },
+        },
+    ]);
+    return accounts.map((account) => ({
+        publicKey: account.publicKey.toString(),
+        user: account.account.user.toString(),
+        amount: account.account.amount.toNumber(),
+        lowerBoundPrice: account.account.lowerBoundPrice.toNumber(),
+        upperBoundPrice: account.account.upperBoundPrice.toNumber(),
+        poolKey: account.account.poolKey.toString(),
+        competition: account.account.competition.toString(),
+        status: convertToBetStatus(account.account.status),
+        leverage: account.account.leverage.toNumber(),
+        leverageMultiplier: account.account.leverageMultiplier.toNumber(),
+        createdAt: new Date(account.account.createdAt.toNumber() * 1000),
+        updatedAt: new Date(account.account.updatedAt.toNumber() * 1000),
     }));
 }
 async function getAllBetAccounts(program) {
     const accounts = await program.account.bet.all();
-    return accounts.map(account => convertProgramToBetData(account.account));
+    return await Promise.all(accounts.map(async (account) => convertProgramToBetData(account.account)));
 }
 async function getActiveBetAccountsForPool(program, poolPubkey) {
     const accounts = await getBetAccountsForPool(program, poolPubkey);
     return accounts.filter(account => account.status === BetStatus.Active);
 }
 async function getBetAccountsForPool(program, poolPubkey) {
-    // Get all bet accounts
-    const accounts = await program.account.bet.all();
-    // Filter accounts where poolKey matches
-    const betAccounts = accounts.filter((account) => {
-        const accountPoolKey = account.account.poolKey.toBase58();
-        const matches = accountPoolKey === poolPubkey.toBase58();
-        return matches;
-    });
-    betAccounts.forEach(acc => {
-        console.log('Account:', {
-            pubkey: acc.publicKey.toBase58(),
-            poolKey: acc.account.poolKey.toBase58(),
-            user: acc.account.user.toBase58()
-        });
-    });
-    return betAccounts.map(account => ({
-        ...convertProgramToBetData(account.account),
-        publicKey: account.publicKey.toBase58()
+    const accounts = await program.account.bet.all([
+        {
+            memcmp: {
+                offset: getPoolKeyOffset(),
+                bytes: poolPubkey.toBase58(),
+            },
+        },
+    ]);
+    return accounts.map((account) => ({
+        publicKey: account.publicKey.toString(),
+        user: account.account.user.toString(),
+        amount: account.account.amount.toNumber(),
+        lowerBoundPrice: account.account.lowerBoundPrice.toNumber(),
+        upperBoundPrice: account.account.upperBoundPrice.toNumber(),
+        poolKey: account.account.poolKey.toString(),
+        competition: account.account.competition.toString(),
+        status: convertToBetStatus(account.account.status),
+        leverage: account.account.leverage.toNumber(),
+        leverageMultiplier: account.account.leverageMultiplier.toNumber(),
+        createdAt: new Date(account.account.createdAt.toNumber() * 1000),
+        updatedAt: new Date(account.account.updatedAt.toNumber() * 1000),
     }));
 }
 async function getAllBetDataByUser(program, user) {
     const bets = await program.account.bet.all();
-    return bets.filter((bet) => bet.account.user.toBase58() === user.toBase58()).map((bet) => convertProgramToBetData(bet.account));
+    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === user.toBase58()).map(async (bet) => convertProgramToBetData(bet.account)));
 }

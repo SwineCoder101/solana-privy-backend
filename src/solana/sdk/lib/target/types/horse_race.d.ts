@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/horse_race.json`.
  */
 export type HorseRace = {
-    "address": "BSKPMTGPrLXDdrHBQSBhH33dqPNDtyTcuMh8BG9Ce1aa";
+    "address": "2Hw1SskuFzbdxFACL74E79AYymNZzmwEh2iymts3XU8D";
     "metadata": {
         "name": "horseRace";
         "version": "0.1.0";
@@ -137,6 +137,10 @@ export type HorseRace = {
                 {
                     "name": "competition";
                     "type": "pubkey";
+                },
+                {
+                    "name": "leverageMultiplier";
+                    "type": "u64";
                 }
             ];
         },
@@ -381,6 +385,122 @@ export type HorseRace = {
             ];
         },
         {
+            "name": "runCreateTreasury";
+            "discriminator": [
+                82,
+                98,
+                53,
+                241,
+                26,
+                97,
+                130,
+                101
+            ];
+            "accounts": [
+                {
+                    "name": "treasury";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
+                    "name": "payer";
+                    "writable": true;
+                    "signer": true;
+                },
+                {
+                    "name": "systemProgram";
+                    "address": "11111111111111111111111111111111";
+                }
+            ];
+            "args": [
+                {
+                    "name": "maxAdmins";
+                    "type": "u8";
+                },
+                {
+                    "name": "minSignatures";
+                    "type": "u8";
+                },
+                {
+                    "name": "initialAdmins";
+                    "type": {
+                        "vec": "pubkey";
+                    };
+                }
+            ];
+        },
+        {
+            "name": "runDepositToTreasury";
+            "discriminator": [
+                196,
+                198,
+                205,
+                187,
+                190,
+                132,
+                4,
+                182
+            ];
+            "accounts": [
+                {
+                    "name": "treasury";
+                    "writable": true;
+                },
+                {
+                    "name": "treasuryAccount";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
+                    "name": "depositor";
+                    "writable": true;
+                    "signer": true;
+                },
+                {
+                    "name": "systemProgram";
+                    "address": "11111111111111111111111111111111";
+                }
+            ];
+            "args": [
+                {
+                    "name": "amount";
+                    "type": "u64";
+                }
+            ];
+        },
+        {
             "name": "runSettlePoolByPrice";
             "docs": [
                 "Settle a Pool"
@@ -403,6 +523,10 @@ export type HorseRace = {
                 },
                 {
                     "name": "pool";
+                    "writable": true;
+                },
+                {
+                    "name": "poolTreasury";
                     "writable": true;
                 },
                 {
@@ -548,6 +672,68 @@ export type HorseRace = {
                 }
             ];
             "args": [];
+        },
+        {
+            "name": "runWithdrawFromTreasury";
+            "discriminator": [
+                91,
+                83,
+                58,
+                157,
+                170,
+                173,
+                109,
+                130
+            ];
+            "accounts": [
+                {
+                    "name": "treasury";
+                    "writable": true;
+                },
+                {
+                    "name": "treasuryAccount";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
+                    "name": "recipient";
+                    "writable": true;
+                },
+                {
+                    "name": "pool";
+                    "writable": true;
+                },
+                {
+                    "name": "authority";
+                    "signer": true;
+                },
+                {
+                    "name": "systemProgram";
+                    "address": "11111111111111111111111111111111";
+                }
+            ];
+            "args": [
+                {
+                    "name": "amount";
+                    "type": "u64";
+                }
+            ];
         }
     ];
     "accounts": [
@@ -615,6 +801,99 @@ export type HorseRace = {
                 244,
                 205
             ];
+        },
+        {
+            "name": "treasury";
+            "discriminator": [
+                238,
+                239,
+                123,
+                238,
+                89,
+                1,
+                168,
+                253
+            ];
+        }
+    ];
+    "events": [
+        {
+            "name": "betCancelled";
+            "discriminator": [
+                32,
+                179,
+                128,
+                184,
+                125,
+                193,
+                106,
+                104
+            ];
+        },
+        {
+            "name": "betCreated";
+            "discriminator": [
+                32,
+                153,
+                105,
+                71,
+                188,
+                72,
+                107,
+                114
+            ];
+        },
+        {
+            "name": "betSettled";
+            "discriminator": [
+                57,
+                145,
+                224,
+                160,
+                62,
+                119,
+                227,
+                206
+            ];
+        },
+        {
+            "name": "competitionCreated";
+            "discriminator": [
+                20,
+                172,
+                54,
+                140,
+                71,
+                253,
+                74,
+                235
+            ];
+        },
+        {
+            "name": "poolCreated";
+            "discriminator": [
+                202,
+                44,
+                41,
+                88,
+                104,
+                220,
+                157,
+                82
+            ];
+        },
+        {
+            "name": "poolSettled";
+            "discriminator": [
+                71,
+                220,
+                136,
+                147,
+                65,
+                185,
+                90,
+                47
+            ];
         }
     ];
     "errors": [
@@ -661,6 +940,150 @@ export type HorseRace = {
                                 "name": "betStatus";
                             };
                         };
+                    },
+                    {
+                        "name": "leverage";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "leverageMultiplier";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "createdAt";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "updatedAt";
+                        "type": "u64";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "betCancelled";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "betKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "user";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "amount";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "lowerBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "upperBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "poolKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "competition";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "cancelledAt";
+                        "type": "u64";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "betCreated";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "betKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "user";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "amount";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "lowerBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "upperBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "poolKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "competition";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "leverageMultiplier";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "createdAt";
+                        "type": "u64";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "betSettled";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "betKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "user";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "amount";
+                        "type": "i64";
+                    },
+                    {
+                        "name": "leverageMultiplier";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "lowerBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "upperBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "hasWinningRange";
+                        "type": "bool";
+                    },
+                    {
+                        "name": "winningLowerBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "winningUpperBoundPrice";
+                        "type": "u64";
                     }
                 ];
             };
@@ -725,6 +1148,56 @@ export type HorseRace = {
             };
         },
         {
+            "name": "competitionCreated";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "competitionKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "tokenA";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "priceFeedId";
+                        "type": "string";
+                    },
+                    {
+                        "name": "admin";
+                        "type": {
+                            "vec": "pubkey";
+                        };
+                    },
+                    {
+                        "name": "houseCutFactor";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "minPayoutRatio";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "numOfPools";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "interval";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "startTime";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "endTime";
+                        "type": "u64";
+                    }
+                ];
+            };
+        },
+        {
             "name": "pool";
             "type": {
                 "kind": "struct";
@@ -748,6 +1221,30 @@ export type HorseRace = {
                     {
                         "name": "treasury";
                         "type": "pubkey";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "poolCreated";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "poolHash";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "competitionKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "startTime";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "endTime";
+                        "type": "u64";
                     }
                 ];
             };
@@ -787,6 +1284,58 @@ export type HorseRace = {
                     },
                     {
                         "name": "bump";
+                        "type": "u8";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "poolSettled";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "poolKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "competition";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "lowerBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "upperBoundPrice";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "hasWinningRange";
+                        "type": "bool";
+                    },
+                    {
+                        "name": "poolBalanceBefore";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "winningBetsBalance";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "losingBetsBalance";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "numberOfBets";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "numberOfWinningBets";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "numberOfLosingBets";
                         "type": "u8";
                     }
                 ];
@@ -896,6 +1445,36 @@ export type HorseRace = {
                     {
                         "name": "postedSlot";
                         "type": "u64";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "treasury";
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "adminAuthorities";
+                        "type": {
+                            "vec": "pubkey";
+                        };
+                    },
+                    {
+                        "name": "minSignatures";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "totalDeposits";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "totalWithdrawals";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "bump";
+                        "type": "u8";
                     }
                 ];
             };

@@ -42,15 +42,19 @@ const utils_1 = require("../../utils");
 const states_1 = require("../../states");
 async function createBetEntry(program, params) {
     const { user, amount, lowerBoundPrice, upperBoundPrice, startTime, endTime, competitionKey } = params;
+    let leverageMultiplier = params.leverageMultiplier;
+    if (!leverageMultiplier) {
+        leverageMultiplier = 1;
+    }
     if (!startTime || !endTime) {
         throw new Error('startTime and endTime are required');
     }
     if (!params.poolKey) {
         params.poolKey = await (0, states_1.findPoolKeyFromStartEndTime)(program, competitionKey, startTime, endTime);
     }
-    return createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, params.poolKey, competitionKey);
+    return createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, leverageMultiplier, params.poolKey, competitionKey);
 }
-async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, poolKey, competitionKey) {
+async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice, leverageMultiplier, poolKey, competitionKey) {
     const betHash = web3_js_1.Keypair.generate().publicKey;
     const [betPDA] = web3_js_1.PublicKey.findProgramAddressSync([
         Buffer.from("bet"),
@@ -59,7 +63,7 @@ async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice
         betHash.toBuffer(),
     ], program.programId);
     const tx = await program.methods
-        .runCreateBet(new anchor.BN(amount), new anchor.BN(lowerBoundPrice), new anchor.BN(upperBoundPrice), poolKey, competitionKey)
+        .runCreateBet(new anchor.BN(amount), new anchor.BN(lowerBoundPrice), new anchor.BN(upperBoundPrice), poolKey, competitionKey, new anchor.BN(leverageMultiplier))
         .accountsStrict({
         user,
         bet: betPDA,

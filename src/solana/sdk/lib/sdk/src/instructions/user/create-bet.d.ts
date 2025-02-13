@@ -10,6 +10,7 @@ export type CreateBetParams = {
     endTime?: number;
     competitionKey: PublicKey;
     poolKey?: PublicKey;
+    leverageMultiplier?: number;
 };
 export declare function createBetEntry(program: Program<HorseRace>, params: CreateBetParams): Promise<VersionedTransaction>;
-export declare function createBet(program: Program<HorseRace>, user: PublicKey, amount: number, lowerBoundPrice: number, upperBoundPrice: number, poolKey: PublicKey, competitionKey: PublicKey): Promise<VersionedTransaction>;
+export declare function createBet(program: Program<HorseRace>, user: PublicKey, amount: number, lowerBoundPrice: number, upperBoundPrice: number, leverageMultiplier: number, poolKey: PublicKey, competitionKey: PublicKey): Promise<VersionedTransaction>;

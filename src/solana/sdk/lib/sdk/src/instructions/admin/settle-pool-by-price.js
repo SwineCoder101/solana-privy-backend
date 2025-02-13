@@ -38,9 +38,11 @@ const anchor = __importStar(require("@coral-xyz/anchor"));
 const web3_js_1 = require("@solana/web3.js");
 const utils_1 = require("../../utils");
 const states_1 = require("../../states");
+const treasury_account_1 = require("../../states/treasury-account");
 async function settlePoolByPrice(program, admin, poolKey, lowerBoundPrice, upperBoundPrice) {
     const poolAccount = await program.account.pool.fetch(poolKey);
     const treasuryKey = poolAccount.treasury;
+    const [poolTreasury] = await treasury_account_1.TreasuryAccount.getPda(program);
     const betAccounts = (await (0, states_1.getBetAccountsForPool)(program, poolKey)).filter((betAccount) => betAccount.status === states_1.BetStatus.Active);
     const userAccounts = betAccounts.map((betAccount) => betAccount.user);
     if (betAccounts.length !== userAccounts.length) {
@@ -54,6 +56,7 @@ async function settlePoolByPrice(program, admin, poolKey, lowerBoundPrice, upper
         .accountsStrict({
         authority: admin,
         pool: poolKey,
+        poolTreasury,
         competition: poolAccount.competitionKey,
         treasury: treasuryKey,
         systemProgram: anchor.web3.SystemProgram.programId,
