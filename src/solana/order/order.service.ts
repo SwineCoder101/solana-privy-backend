@@ -22,6 +22,7 @@ export class OrderService {
       upperBoundPrice: number;
       poolKey: PublicKey;
       competitionKey: PublicKey;
+      leverageMultiplier: number;
     },
   ) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
@@ -34,6 +35,7 @@ export class OrderService {
         params.amount * LAMPORTS_PER_SOL,
         params.lowerBoundPrice,
         params.upperBoundPrice,
+        params.leverageMultiplier,
         params.poolKey,
         params.competitionKey,
       );
