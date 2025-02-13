@@ -23,6 +23,7 @@ import { OracleModule } from './solana/oracle/oracle.module';
 import { HealthModule } from './health/health.module';
 import { AdminModule } from './solana/admin/admin.module';
 import { SettlementModule } from './solana/settlement/settlement.module';
+import { BinanceModule } from './binance/binance.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { SettlementModule } from './solana/settlement/settlement.module';
     HealthModule,
     AdminModule,
     SettlementModule,
+    BinanceModule,
   ],
   controllers: [AppController],
   providers: [AppService, S3Service, PrismaService],

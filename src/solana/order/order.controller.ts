@@ -9,6 +9,7 @@ class CreateBetDto {
   upperBoundPrice: number;
   poolKey: string;
   competitionKey: string;
+  leverageMultiplier: number;
 }
 
 class CancelBetDto {
@@ -32,6 +33,7 @@ export class OrderController {
       upperBoundPrice: dto.upperBoundPrice,
       poolKey: new PublicKey(dto.poolKey),
       competitionKey: new PublicKey(dto.competitionKey),
+      leverageMultiplier: dto.leverageMultiplier,
     });
     return createBetResponse;
   }
