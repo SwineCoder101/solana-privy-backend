@@ -3,7 +3,10 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
 import { createBet } from '@solana-sdk/instructions/user/create-bet';
-import { cancelBet } from '@solana-sdk/instructions/user/cancel-bet';
+import {
+  cancelBetEntry,
+  CancelBetParams,
+} from '@solana-sdk/instructions/user/cancel-bet';
 
 @Injectable()
 export class OrderService {
@@ -51,20 +54,12 @@ export class OrderService {
     }
   }
 
-  async cancelBet(
-    userId: string,
-    params: {
-      poolKey: PublicKey;
-      betHash: PublicKey;
-    },
-  ) {
+  async cancelBet(userId: string, params: CancelBetParams) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
-    const transaction = await cancelBet(
+    const transaction = await cancelBetEntry(
       this.programService.getProgram() as any,
-      new PublicKey(delegatedWallet.address),
-      params.poolKey,
-      params.betHash,
+      params,
     );
 
     return this.privyService.executeDelegatedActionWithWallet(
