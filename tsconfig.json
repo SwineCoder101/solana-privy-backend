@@ -21,8 +21,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "@solana-sdk/*": ["src/solana/sdk/lib/sdk/src/*"],
-      "@solana-sdk": ["src/solana/sdk/lib/sdk/src"]
+      "@solana-sdk/*": ["src/solana/sdk/lib/anchor/sdk/src/*"],
+      "@solana-sdk": ["src/solana/sdk/lib/anchor/sdk/src"]
     }
   },
   "include": [

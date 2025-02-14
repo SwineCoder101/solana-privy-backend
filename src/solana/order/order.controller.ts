@@ -15,7 +15,7 @@ class CreateBetDto {
 class CancelBetDto {
   userId: string;
   poolKey: string;
-  betHash: string;
+  userKey: string;
 }
 
 @Controller('order')
@@ -41,8 +41,8 @@ export class OrderController {
   @Post('cancel-bet')
   async cancelBet(@Body() dto: CancelBetDto) {
     return this.orderService.cancelBet(dto.userId, {
+      user: new PublicKey(dto.userKey),
       poolKey: new PublicKey(dto.poolKey),
-      betHash: new PublicKey(dto.betHash),
     });
   }
 }

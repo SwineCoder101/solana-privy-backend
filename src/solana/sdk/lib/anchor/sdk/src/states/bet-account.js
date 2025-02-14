@@ -6,6 +6,7 @@ exports.convertToBetStatus = convertToBetStatus;
 exports.convertToBetProgramStatus = convertToBetProgramStatus;
 exports.convertProgramToBetData = convertProgramToBetData;
 exports.getBetData = getBetData;
+exports.getBetsForUserAndPool = getBetsForUserAndPool;
 exports.getBetAccount = getBetAccount;
 exports.getBetAccountsForUser = getBetAccountsForUser;
 exports.getAllBetAccounts = getAllBetAccounts;
@@ -101,6 +102,10 @@ async function getBetData(program, betPubkey) {
         createdAt: new Date(betAccount.createdAt.toNumber() * 1000),
         updatedAt: new Date(betAccount.updatedAt.toNumber() * 1000),
     };
+}
+async function getBetsForUserAndPool(program, userPubkey, poolPubkey) {
+    const bets = await program.account.bet.all();
+    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === userPubkey.toBase58() && bet.account.poolKey.toBase58() === poolPubkey.toBase58()).map(async (bet) => convertProgramToBetData(bet.account)));
 }
 async function getBetAccount(program, betPubkey) {
     return program.account.bet.fetch(betPubkey);

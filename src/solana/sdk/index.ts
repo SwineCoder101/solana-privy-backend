@@ -1,1 +1,1 @@
-export * from './lib/sdk/src';
+export * from './lib/anchor/sdk/src';
