@@ -57,14 +57,17 @@ export class OrderService {
   async cancelBet(userId: string, params: CancelBetParams) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
-    const transaction = await cancelBetEntry(
+    const transactions = await cancelBetEntry(
       this.programService.getProgram() as any,
       params,
     );
 
-    return this.privyService.executeDelegatedActionWithWallet(
-      delegatedWallet,
-      transaction,
+    const signatures = await Promise.all(
+      transactions.map((tx) =>
+        this.privyService.executeDelegatedActionWithWallet(delegatedWallet, tx),
+      ),
     );
+
+    return signatures;
   }
 }

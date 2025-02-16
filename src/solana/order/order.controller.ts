@@ -40,6 +40,8 @@ export class OrderController {
 
   @Post('cancel-bet')
   async cancelBet(@Body() dto: CancelBetDto) {
+    this.logger.log('Cancelling bet with params: ', dto);
+
     return this.orderService.cancelBet(dto.userId, {
       user: new PublicKey(dto.userKey),
       poolKey: new PublicKey(dto.poolKey),

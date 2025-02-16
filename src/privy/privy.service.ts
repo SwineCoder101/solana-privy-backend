@@ -64,6 +64,9 @@ export class PrivyService {
   ): Promise<string> {
     try {
       this.logger.log('executing transaction for wallet: ', wallet.address);
+
+      console.log('transaction: ', transaction);
+
       const signedTxResponse =
         await this.privyClient.walletApi.solana.signTransaction({
           address: wallet.address,

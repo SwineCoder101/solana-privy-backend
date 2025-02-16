@@ -123,6 +123,10 @@ export class AdminService implements OnModuleInit {
   }
 
   async signAndSendTransaction(vTx: VersionedTransaction): Promise<string> {
+    this.logger.log(
+      `Admin public key: ${this.adminKeypair.publicKey.toBase58()}`,
+    );
+
     const { blockhash } = await this.programService
       .getConnection()
       .getLatestBlockhash();
@@ -140,6 +144,17 @@ export class AdminService implements OnModuleInit {
         data: Buffer.from(ix.data),
       })),
       recentBlockhash: blockhash,
+    });
+
+    message.compiledInstructions.forEach((ix) => {
+      ix.accountKeyIndexes.forEach((accIdx) => {
+        if (message.isAccountSigner(accIdx)) {
+          console.log(
+            'Transaction wants this key to sign:',
+            message.staticAccountKeys[accIdx].toString(),
+          );
+        }
+      });
     });
 
     const newTx = new web3.VersionedTransaction(

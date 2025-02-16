@@ -39,7 +39,7 @@ export type StatusEnumProgram = {
 export declare function convertBetToProgramData(betData: BetData): BetProgramData;
 export declare function convertToBetStatus(status: StatusEnumProgram): BetStatus;
 export declare function convertToBetProgramStatus(status: BetStatus): StatusEnumProgram;
-export declare function convertProgramToBetData(account: any): Promise<BetData>;
+export declare function convertProgramToBetData(account: any, accountPublicKey: PublicKey): Promise<BetData>;
 export declare function getBetData(program: Program<HorseRace>, betPubkey: PublicKey): Promise<BetData>;
 export declare function getBetsForUserAndPool(program: Program<HorseRace>, userPubkey: PublicKey, poolPubkey: PublicKey): Promise<BetData[]>;
 export declare function getBetAccount(program: Program<HorseRace>, betPubkey: PublicKey): Promise<{

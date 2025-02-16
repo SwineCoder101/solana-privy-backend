@@ -9,11 +9,12 @@ const __1 = require("../..");
 async function cancelBetEntry(program, params) {
     const { user, poolKey } = params;
     const bets = await (0, __1.getBetsForUserAndPool)(program, user, poolKey);
-    const betKey = bets[0].publicKey;
-    if (!betKey) {
+    if (!bets) {
         throw new Error('No bet found');
     }
-    return await cancelBetByKey(program, new web3_js_1.PublicKey(betKey), user, poolKey);
+    return Promise.all(bets.map(async (bet) => {
+        return await cancelBetByKey(program, new web3_js_1.PublicKey(bet.publicKey), user, poolKey);
+    }));
 }
 async function cancelBetByKey(program, betKey, user, poolKey) {
     const tx = await program.methods

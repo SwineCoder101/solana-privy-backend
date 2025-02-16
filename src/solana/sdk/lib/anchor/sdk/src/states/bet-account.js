@@ -69,15 +69,15 @@ function convertToBetProgramStatus(status) {
             throw new Error("Unknown BetStatus");
     }
 }
-async function convertProgramToBetData(account) {
+async function convertProgramToBetData(account, accountPublicKey) {
     return {
-        publicKey: account.publicKey?.toString() || '',
+        publicKey: accountPublicKey.toBase58(),
         user: account.user.toString(),
         amount: account.amount.toNumber(),
         lowerBoundPrice: account.lowerBoundPrice.toNumber(),
         upperBoundPrice: account.upperBoundPrice.toNumber(),
-        poolKey: account.poolKey.toString(),
-        competition: account.competition.toString(),
+        poolKey: account.poolKey.toBase58(),
+        competition: account.competition.toBase58(),
         status: convertToBetStatus(account.status),
         leverage: account.leverage.toNumber(),
         leverageMultiplier: account.leverageMultiplier.toNumber(),
@@ -105,7 +105,7 @@ async function getBetData(program, betPubkey) {
 }
 async function getBetsForUserAndPool(program, userPubkey, poolPubkey) {
     const bets = await program.account.bet.all();
-    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === userPubkey.toBase58() && bet.account.poolKey.toBase58() === poolPubkey.toBase58()).map(async (bet) => convertProgramToBetData(bet.account)));
+    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === userPubkey.toBase58() && bet.account.poolKey.toBase58() === poolPubkey.toBase58()).map(async (bet) => convertProgramToBetData(bet.account, bet.publicKey)));
 }
 async function getBetAccount(program, betPubkey) {
     return program.account.bet.fetch(betPubkey);
@@ -136,7 +136,7 @@ async function getBetAccountsForUser(program, userPubkey) {
 }
 async function getAllBetAccounts(program) {
     const accounts = await program.account.bet.all();
-    return await Promise.all(accounts.map(async (account) => convertProgramToBetData(account.account)));
+    return await Promise.all(accounts.map(async (account) => convertProgramToBetData(account.account, account.publicKey)));
 }
 async function getActiveBetAccountsForPool(program, poolPubkey) {
     const accounts = await getBetAccountsForPool(program, poolPubkey);
@@ -168,5 +168,5 @@ async function getBetAccountsForPool(program, poolPubkey) {
 }
 async function getAllBetDataByUser(program, user) {
     const bets = await program.account.bet.all();
-    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === user.toBase58()).map(async (bet) => convertProgramToBetData(bet.account)));
+    return await Promise.all(bets.filter((bet) => bet.account.user.toBase58() === user.toBase58()).map(async (bet) => convertProgramToBetData(bet.account, bet.publicKey)));
 }
