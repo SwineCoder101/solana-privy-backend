@@ -1,6 +1,6 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
-import { SettlementService } from './settlement.service';
+import { SettlementConfig, SettlementService } from './settlement.service';
 import { IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class SettlePoolByPriceDto {
@@ -30,5 +30,17 @@ export class SettlementController {
       dto.lowerBoundPrice,
       dto.upperBoundPrice,
     );
+  }
+
+  @Post('initiate-settlement-automation')
+  async initiateSettlementAutomation(@Body() dto: SettlementConfig) {
+    this.logger.log('Initiating settlement automation: ', dto);
+    return this.settlementService.initiateSettlementAutomation(dto);
+  }
+
+  @Post('stop-settlement-automation')
+  async stopSettlementAutomation(@Body() dto: { competitionKey: string }) {
+    this.logger.log('Stopping settlement automation: ', dto);
+    return this.settlementService.stopSettlementAutomation(dto.competitionKey);
   }
 }

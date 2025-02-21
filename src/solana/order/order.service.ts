@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import {
+  cancelAllBetsForUserOnPoolEntry,
+  CancelBetParams,
+} from '@solana-sdk/instructions/user/cancel-bet';
+import { createBet } from '@solana-sdk/instructions/user/create-bet';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { PrivyService } from '../../privy/privy.service';
 import { ProgramService } from '../program/program.service';
-import { createBet } from '@solana-sdk/instructions/user/create-bet';
-import {
-  cancelBetEntry,
-  CancelBetParams,
-} from '@solana-sdk/instructions/user/cancel-bet';
 
 @Injectable()
 export class OrderService {
@@ -57,17 +57,17 @@ export class OrderService {
   async cancelBet(userId: string, params: CancelBetParams) {
     const delegatedWallet = await this.privyService.getDelegatedWallet(userId);
 
-    const transactions = await cancelBetEntry(
+    const { txs, bets } = await cancelAllBetsForUserOnPoolEntry(
       this.programService.getProgram() as any,
       params,
     );
 
     const signatures = await Promise.all(
-      transactions.map((tx) =>
+      txs.map((tx) =>
         this.privyService.executeDelegatedActionWithWallet(delegatedWallet, tx),
       ),
     );
 
-    return signatures;
+    return { signatures, bets };
   }
 }

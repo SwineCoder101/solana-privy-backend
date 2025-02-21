@@ -7,4 +7,5 @@ export interface CreateTreasuryParams {
     initialAdmins: web3.PublicKey[];
     payer?: web3.PublicKey;
 }
+export declare function createTreasuryIfNotExists(program: Program<HorseRace>, params: CreateTreasuryParams): Promise<TransactionInstruction | null>;
 export declare function createTreasury(program: Program<HorseRace>, params: CreateTreasuryParams): Promise<TransactionInstruction>;

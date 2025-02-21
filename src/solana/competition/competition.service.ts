@@ -33,10 +33,6 @@ export class CompetitionService implements OnModuleInit {
       const competitionTxHash =
         await this.adminService.signSendAndConfirmTransaction(competitionTx);
 
-      // const poolTxHashes = await Promise.all(
-      //   poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
-      // );
-
       const poolTxHashes = [];
       poolTxs.forEach(async (tx) => {
         const sig = await this.adminService.signAndSendTransaction(tx);
@@ -44,13 +40,6 @@ export class CompetitionService implements OnModuleInit {
         await this.adminService.confirmTransaction(sig);
         poolTxHashes.push(sig);
       });
-
-      // this.logger.log('Competition tx hash: ', competitionTxHash);
-      // this.logger.log('Pool tx hashes: ', poolTxHashes);
-
-      // await Promise.all(
-      //   poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
-      // );
 
       return {
         competitionTxHash,

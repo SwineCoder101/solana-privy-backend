@@ -40,6 +40,7 @@ const anchor_1 = require("@coral-xyz/anchor");
 const web3_js_1 = require("@solana/web3.js");
 const utils_1 = require("../../utils");
 const states_1 = require("../../states");
+const constants_1 = require("../../constants");
 async function createBetEntry(program, params) {
     const { user, amount, lowerBoundPrice, upperBoundPrice, startTime, endTime, competitionKey } = params;
     let leverageMultiplier = params.leverageMultiplier;
@@ -62,6 +63,15 @@ async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice
         poolKey.toBuffer(),
         betHash.toBuffer(),
     ], program.programId);
+    const [poolVaultPDA] = web3_js_1.PublicKey.findProgramAddressSync([
+        Buffer.from(constants_1.POOL_VAULT_SEED),
+        poolKey.toBuffer(),
+    ], program.programId);
+    // console log all accounts
+    // console.log("betPDA", betPDA.toBase58());
+    // console.log("user", user.toBase58());
+    // console.log("poolKey", poolKey.toBase58());
+    // console.log("betHash", betHash.toBase58());
     const tx = await program.methods
         .runCreateBet(new anchor.BN(amount), new anchor.BN(lowerBoundPrice), new anchor.BN(upperBoundPrice), poolKey, competitionKey, new anchor.BN(leverageMultiplier))
         .accountsStrict({
@@ -69,6 +79,7 @@ async function createBet(program, user, amount, lowerBoundPrice, upperBoundPrice
         bet: betPDA,
         pool: poolKey,
         betHashAcc: betHash,
+        poolVault: poolVaultPDA,
         systemProgram: anchor_1.web3.SystemProgram.programId,
     }).instruction();
     const vtx = await (0, utils_1.getVersionTxFromInstructions)(program.provider.connection, [tx]);

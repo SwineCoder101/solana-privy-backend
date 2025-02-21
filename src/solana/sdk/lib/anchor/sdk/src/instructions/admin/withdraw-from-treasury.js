@@ -5,12 +5,13 @@ const anchor_1 = require("@coral-xyz/anchor");
 const treasury_account_1 = require("../../states/treasury-account");
 async function withdrawFromTreasury(program, params) {
     const { amount, recipient, pool, authority = program.provider.publicKey } = params;
-    const [treasuryKey] = await treasury_account_1.TreasuryAccount.getPda(program);
+    const [treasuryKey] = await treasury_account_1.TreasuryAccount.getTreasuryPda(program);
+    const [treasuryVaultKey] = await treasury_account_1.TreasuryAccount.getTreasuryVaultPda(program);
     return program.methods
         .runWithdrawFromTreasury(amount)
         .accountsStrict({
         treasury: treasuryKey,
-        treasuryAccount: treasuryKey,
+        treasuryVault: treasuryVaultKey,
         recipient,
         pool,
         authority,
