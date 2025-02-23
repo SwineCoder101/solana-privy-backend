@@ -1,19 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { settlePoolByPrice } from '@solana-sdk/instructions/admin/settle-pool-by-price';
 import { PublicKey } from '@solana/web3.js';
+import { CronJob } from 'cron';
+import { BinanceClientService } from 'src/binance/binance-client.service';
 import { AdminService } from '../admin/admin.service';
 import { ProgramService } from '../program/program.service';
-import { CronJob } from 'cron';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { PythService } from 'src/pyth/pyth.service';
+import { PoolData } from '@solana-sdk/states';
 
 export type SettlementConfig = {
   interval: number;
   startTime: number;
   endTime: number;
   competition: string;
-  priceFeedId: string;
+  priceFeedId?: string;
+  tokenPair?: string;
+  poolAccounts: PoolData[];
 };
+
 @Injectable()
 export class SettlementService {
   private readonly logger = new Logger(SettlementService.name);
@@ -23,13 +27,10 @@ export class SettlementService {
     private readonly programService: ProgramService,
     private readonly adminService: AdminService,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly pythService: PythService,
+    private readonly binanceClientService: BinanceClientService,
   ) {}
 
-  async initiateSettlementAutomation(
-    config: SettlementConfig,
-    poolKey: PublicKey,
-  ) {
+  async initiateSettlementAutomation(config: SettlementConfig) {
     const { interval, startTime, endTime, competition } = config;
     const now = Date.now();
 
@@ -63,10 +64,34 @@ export class SettlementService {
         return;
       }
 
+      const settlementPoolKey = await this.findSettlementPool(
+        config.poolAccounts,
+      );
+
+      if (!settlementPoolKey) {
+        this.logger.error('No active settlement pool found');
+
+        const competitionAccount =
+          await this.programService.getCompetitionAccount(
+            new PublicKey(competition),
+          );
+
+        if (!competitionAccount) {
+          this.logger.error('Competition account not found');
+          return;
+        }
+
+        return;
+      }
+
       try {
-        const { lowerBoundPrice, upperBoundPrice } =
-          await this.pythService.getPriceRange(priceFeedId, startTime, endTime);
-        await this.settlePoolByPrice(poolKey, lowerBoundPrice, upperBoundPrice);
+        const { lowest, highest } =
+          await this.binanceClientService.fetchPriceRange(
+            config.tokenPair,
+            startTime,
+            endTime,
+          );
+        await this.settlePool(settlementPoolKey, lowest, highest);
       } catch (error) {
         this.logger.error(`Error during settlement: ${error.message}`);
       }
@@ -79,6 +104,20 @@ export class SettlementService {
     this.logger.log(
       `Settlement automation started for competition ${competition} with cron expression ${cronExpression}`,
     );
+  }
+
+  private async findSettlementPool(
+    poolAccounts: PoolData[],
+  ): Promise<PublicKey | null> {
+    const currentTime = await this.programService.getTime();
+
+    poolAccounts.sort((a, b) => a.startTime - b.startTime);
+    for (const pool of poolAccounts) {
+      if (currentTime >= pool.startTime && currentTime <= pool.endTime) {
+        return new PublicKey(pool.poolKey);
+      }
+    }
+    return null;
   }
 
   async stopSettlementAutomation(competitionKey: string) {
@@ -98,7 +137,7 @@ export class SettlementService {
     );
   }
 
-  async settlePoolByPrice(
+  async settlePool(
     poolKey: PublicKey,
     lowerBoundPrice: number,
     upperBoundPrice: number,

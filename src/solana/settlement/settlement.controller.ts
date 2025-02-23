@@ -25,7 +25,7 @@ export class SettlementController {
   @Post('settle-by-price')
   async settlePoolByPrice(@Body() dto: SettlePoolByPriceDto) {
     this.logger.log('Settling pool by price: ', dto);
-    return this.settlementService.settlePoolByPrice(
+    return this.settlementService.settlePool(
       new PublicKey(dto.poolKey),
       dto.lowerBoundPrice,
       dto.upperBoundPrice,

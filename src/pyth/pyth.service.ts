@@ -16,6 +16,7 @@ export class PythService {
 
   streamPrice(tokenPair: string) {
     // Replace with the actual Pyth API endpoint URL for the token pair.
+    //0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43
     const url = `https://pyth.network/api/pricefeed/${tokenPair}`;
     return this.httpService.get(url).pipe(
       map((response) => {
