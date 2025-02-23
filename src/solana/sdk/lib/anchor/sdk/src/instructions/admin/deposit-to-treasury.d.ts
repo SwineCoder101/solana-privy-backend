@@ -1,6 +1,6 @@
 import { Program, web3, BN } from '@coral-xyz/anchor';
-import { HorseRace } from '../../types/horse_race';
 import { TransactionInstruction } from '@solana/web3.js';
+import { HorseRace } from '../../types/horse_race';
 export interface DepositToTreasuryParams {
     amount: BN;
     depositor?: web3.PublicKey;

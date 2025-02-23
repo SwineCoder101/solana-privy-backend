@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/horse_race.json`.
  */
 export type HorseRace = {
-    "address": "2Hw1SskuFzbdxFACL74E79AYymNZzmwEh2iymts3XU8D";
+    "address": "99ieFmE1u6Pws1Nneo2ksKvZjNsbDtiEbhGSfGUth3BN";
     "metadata": {
         "name": "horseRace";
         "version": "0.1.0";
@@ -30,6 +30,11 @@ export type HorseRace = {
             ];
             "accounts": [
                 {
+                    "name": "authority";
+                    "writable": true;
+                    "signer": true;
+                },
+                {
                     "name": "user";
                     "writable": true;
                     "signer": true;
@@ -42,8 +47,106 @@ export type HorseRace = {
                     "writable": true;
                 },
                 {
+                    "name": "poolVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool";
+                            }
+                        ];
+                    };
+                },
+                {
+                    "name": "treasury";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
+                    "name": "treasuryVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
                     "name": "pool";
                     "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108
+                                ];
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool.competition";
+                                "account": "pool";
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool.pool_hash";
+                                "account": "pool";
+                            }
+                        ];
+                    };
                 },
                 {
                     "name": "systemProgram";
@@ -106,14 +209,38 @@ export type HorseRace = {
                     };
                 },
                 {
+                    "name": "poolVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool";
+                            }
+                        ];
+                    };
+                },
+                {
                     "name": "pool";
                     "writable": true;
                 },
                 {
                     "name": "systemProgram";
-                    "docs": [
-                        "System program"
-                    ];
                     "address": "11111111111111111111111111111111";
                 }
             ];
@@ -291,6 +418,33 @@ export type HorseRace = {
                     };
                 },
                 {
+                    "name": "poolVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool";
+                            }
+                        ];
+                    };
+                },
+                {
                     "name": "systemProgram";
                     "address": "11111111111111111111111111111111";
                 }
@@ -303,10 +457,6 @@ export type HorseRace = {
                 {
                     "name": "endTime";
                     "type": "u64";
-                },
-                {
-                    "name": "treasury";
-                    "type": "pubkey";
                 }
             ];
         },
@@ -398,6 +548,42 @@ export type HorseRace = {
             ];
             "accounts": [
                 {
+                    "name": "payer";
+                    "writable": true;
+                    "signer": true;
+                },
+                {
+                    "name": "systemProgram";
+                    "address": "11111111111111111111111111111111";
+                },
+                {
+                    "name": "treasuryVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            }
+                        ];
+                    };
+                },
+                {
                     "name": "treasury";
                     "writable": true;
                     "pda": {
@@ -417,15 +603,6 @@ export type HorseRace = {
                             }
                         ];
                     };
-                },
-                {
-                    "name": "payer";
-                    "writable": true;
-                    "signer": true;
-                },
-                {
-                    "name": "systemProgram";
-                    "address": "11111111111111111111111111111111";
                 }
             ];
             "args": [
@@ -463,7 +640,7 @@ export type HorseRace = {
                     "writable": true;
                 },
                 {
-                    "name": "treasuryAccount";
+                    "name": "treasuryVault";
                     "writable": true;
                     "pda": {
                         "seeds": [
@@ -477,7 +654,13 @@ export type HorseRace = {
                                     115,
                                     117,
                                     114,
-                                    121
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
                                 ];
                             }
                         ];
@@ -522,20 +705,73 @@ export type HorseRace = {
                     "signer": true;
                 },
                 {
+                    "name": "competition";
+                    "writable": true;
+                    "relations": [
+                        "pool"
+                    ];
+                },
+                {
                     "name": "pool";
                     "writable": true;
                 },
                 {
-                    "name": "poolTreasury";
+                    "name": "poolVault";
                     "writable": true;
-                },
-                {
-                    "name": "competition";
-                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            },
+                            {
+                                "kind": "account";
+                                "path": "pool";
+                            }
+                        ];
+                    };
                 },
                 {
                     "name": "treasury";
                     "writable": true;
+                },
+                {
+                    "name": "treasuryVault";
+                    "writable": true;
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const";
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ];
+                            }
+                        ];
+                    };
                 },
                 {
                     "name": "systemProgram";
@@ -691,7 +927,7 @@ export type HorseRace = {
                     "writable": true;
                 },
                 {
-                    "name": "treasuryAccount";
+                    "name": "treasuryVault";
                     "writable": true;
                     "pda": {
                         "seeds": [
@@ -705,7 +941,13 @@ export type HorseRace = {
                                     115,
                                     117,
                                     114,
-                                    121
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
                                 ];
                             }
                         ];
@@ -870,6 +1112,19 @@ export type HorseRace = {
             ];
         },
         {
+            "name": "insufficientFunds";
+            "discriminator": [
+                1,
+                162,
+                237,
+                78,
+                144,
+                121,
+                44,
+                184
+            ];
+        },
+        {
             "name": "poolCreated";
             "discriminator": [
                 202,
@@ -893,6 +1148,19 @@ export type HorseRace = {
                 185,
                 90,
                 47
+            ];
+        },
+        {
+            "name": "withdrawal";
+            "discriminator": [
+                6,
+                187,
+                215,
+                71,
+                92,
+                85,
+                90,
+                83
             ];
         }
     ];
@@ -934,16 +1202,16 @@ export type HorseRace = {
                         "type": "pubkey";
                     },
                     {
+                        "name": "poolVaultKey";
+                        "type": "pubkey";
+                    },
+                    {
                         "name": "status";
                         "type": {
                             "defined": {
                                 "name": "betStatus";
                             };
                         };
-                    },
-                    {
-                        "name": "leverage";
-                        "type": "u64";
                     },
                     {
                         "name": "leverageMultiplier";
@@ -995,7 +1263,7 @@ export type HorseRace = {
                     },
                     {
                         "name": "cancelledAt";
-                        "type": "u64";
+                        "type": "i64";
                     }
                 ];
             };
@@ -1024,6 +1292,10 @@ export type HorseRace = {
                     {
                         "name": "upperBoundPrice";
                         "type": "u64";
+                    },
+                    {
+                        "name": "poolVaultKey";
+                        "type": "pubkey";
                     },
                     {
                         "name": "poolKey";
@@ -1058,8 +1330,24 @@ export type HorseRace = {
                         "type": "pubkey";
                     },
                     {
+                        "name": "userBalanceBefore";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "userBalanceAfter";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "poolBalanceBefore";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "poolBalanceAfter";
+                        "type": "u64";
+                    },
+                    {
                         "name": "amount";
-                        "type": "i64";
+                        "type": "u64";
                     },
                     {
                         "name": "leverageMultiplier";
@@ -1153,7 +1441,7 @@ export type HorseRace = {
                 "kind": "struct";
                 "fields": [
                     {
-                        "name": "competitionKey";
+                        "name": "competition";
                         "type": "pubkey";
                     },
                     {
@@ -1198,6 +1486,33 @@ export type HorseRace = {
             };
         },
         {
+            "name": "insufficientFunds";
+            "docs": [
+                "Emitted when there aren’t enough funds in the treasury to withdraw."
+            ];
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "treasuryBalance";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "amountRequested";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "recipient";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "treasury";
+                        "type": "pubkey";
+                    }
+                ];
+            };
+        },
+        {
             "name": "pool";
             "type": {
                 "kind": "struct";
@@ -1207,7 +1522,7 @@ export type HorseRace = {
                         "type": "pubkey";
                     },
                     {
-                        "name": "competitionKey";
+                        "name": "competition";
                         "type": "pubkey";
                     },
                     {
@@ -1219,8 +1534,16 @@ export type HorseRace = {
                         "type": "u64";
                     },
                     {
-                        "name": "treasury";
+                        "name": "bump";
+                        "type": "u8";
+                    },
+                    {
+                        "name": "vaultKey";
                         "type": "pubkey";
+                    },
+                    {
+                        "name": "vaultBump";
+                        "type": "u8";
                     }
                 ];
             };
@@ -1235,7 +1558,11 @@ export type HorseRace = {
                         "type": "pubkey";
                     },
                     {
-                        "name": "competitionKey";
+                        "name": "vaultKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "competition";
                         "type": "pubkey";
                     },
                     {
@@ -1316,6 +1643,10 @@ export type HorseRace = {
                     },
                     {
                         "name": "poolBalanceBefore";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "poolBalanceAfter";
                         "type": "u64";
                     },
                     {
@@ -1473,6 +1804,14 @@ export type HorseRace = {
                         "type": "u64";
                     },
                     {
+                        "name": "vaultKey";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "vaultBump";
+                        "type": "u8";
+                    },
+                    {
                         "name": "bump";
                         "type": "u8";
                     }
@@ -1508,6 +1847,29 @@ export type HorseRace = {
                     },
                     {
                         "name": "full";
+                    }
+                ];
+            };
+        },
+        {
+            "name": "withdrawal";
+            "docs": [
+                "Emitted after a successful withdrawal."
+            ];
+            "type": {
+                "kind": "struct";
+                "fields": [
+                    {
+                        "name": "amount";
+                        "type": "u64";
+                    },
+                    {
+                        "name": "recipient";
+                        "type": "pubkey";
+                    },
+                    {
+                        "name": "treasury";
+                        "type": "pubkey";
                     }
                 ];
             };

@@ -1,9 +1,20 @@
-import { AnchorProvider, Program, Wallet } from '@coral-xyz/anchor';
+import {
+  AnchorProvider,
+  Program,
+  ProgramAccount,
+  Wallet,
+} from '@coral-xyz/anchor';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Connection, Keypair } from '@solana/web3.js';
+import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { HorseRace } from '@solana-sdk/types/horse_race';
-import { IDL } from '@solana-sdk/index';
+import {
+  CompetitionData,
+  CompetitionProgramData,
+  convertProgramToCompetitionData,
+  getCompetitionAccount,
+  IDL,
+} from '@solana-sdk/index';
 
 @Injectable()
 export class ProgramService implements OnModuleInit {
@@ -51,6 +62,33 @@ export class ProgramService implements OnModuleInit {
 
   getProgram(): Program<HorseRace> {
     return this.program;
+  }
+
+  async getTime(): Promise<number> {
+    const slot = await this.connection.getSlot();
+    const blockTime = await this.connection.getBlockTime(slot);
+
+    if (blockTime !== null) {
+      this.logger.log('Current network time (Unix timestamp):', blockTime);
+    } else {
+      this.logger.log('Block time not available for slot', slot);
+    }
+    return blockTime;
+  }
+
+  async getCompetitionAccount(
+    competition: PublicKey,
+  ): Promise<CompetitionData> {
+    const competitionAccount = await getCompetitionAccount(
+      this.program,
+      competition,
+    );
+    const programAccount: ProgramAccount<CompetitionProgramData> = {
+      publicKey: competition,
+      account: competitionAccount,
+    };
+    const competitionData = convertProgramToCompetitionData(programAccount);
+    return competitionData;
   }
 
   getProvider(): AnchorProvider {

@@ -6,12 +6,21 @@ import {
 } from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
 import { AdminService } from '../admin/admin.service';
+import {
+  convertProgramToPoolData,
+  getPoolAccount,
+  PoolData,
+} from '@solana-sdk/states';
+import { SettlementService } from '../settlement/settlement.service';
 
 @Injectable()
 export class CompetitionService implements OnModuleInit {
   private readonly logger = new Logger(CompetitionService.name);
 
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly settlementService: SettlementService,
+  ) {}
   onModuleInit() {
     this.logger.log('Initializing competition service');
   }
@@ -33,10 +42,6 @@ export class CompetitionService implements OnModuleInit {
       const competitionTxHash =
         await this.adminService.signSendAndConfirmTransaction(competitionTx);
 
-      // const poolTxHashes = await Promise.all(
-      //   poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
-      // );
-
       const poolTxHashes = [];
       poolTxs.forEach(async (tx) => {
         const sig = await this.adminService.signAndSendTransaction(tx);
@@ -45,12 +50,27 @@ export class CompetitionService implements OnModuleInit {
         poolTxHashes.push(sig);
       });
 
-      // this.logger.log('Competition tx hash: ', competitionTxHash);
-      // this.logger.log('Pool tx hashes: ', poolTxHashes);
+      const poolAccounts: PoolData[] = await Promise.all(
+        poolKeys.map(async (key) => {
+          const account = await getPoolAccount(
+            this.adminService.getProgram(),
+            key,
+          );
+          return convertProgramToPoolData(account);
+        }),
+      );
 
-      // await Promise.all(
-      //   poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
-      // );
+      this.logger.log('Scheduling settlement automation....');
+
+      await this.settlementService.initiateSettlementAutomation({
+        interval: params.interval,
+        startTime: params.startTime,
+        endTime: params.endTime,
+        competition: poolAccounts[0].competitionKey,
+        poolAccounts: poolAccounts,
+      });
+
+      this.logger.log('Pool accounts: ', poolAccounts);
 
       return {
         competitionTxHash,
@@ -87,6 +107,7 @@ export class CompetitionService implements OnModuleInit {
       params.interval,
       params.startTime,
       params.endTime,
+      this.adminService.getAdminPublicKey(),
     );
 
     return transaction;

@@ -24,6 +24,7 @@ import { HealthModule } from './health/health.module';
 import { AdminModule } from './solana/admin/admin.module';
 import { SettlementModule } from './solana/settlement/settlement.module';
 import { BinanceModule } from './binance/binance.module';
+import { PythModule } from './pyth/pyth.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { BinanceModule } from './binance/binance.module';
     AdminModule,
     SettlementModule,
     BinanceModule,
+    PythModule,
   ],
   controllers: [AppController],
   providers: [AppService, S3Service, PrismaService],
