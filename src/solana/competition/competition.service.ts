@@ -48,9 +48,17 @@ export class CompetitionService implements OnModuleInit {
       // this.logger.log('Competition tx hash: ', competitionTxHash);
       // this.logger.log('Pool tx hashes: ', poolTxHashes);
 
-      // await Promise.all(
-      //   poolTxHashes.map((sig) => this.adminService.confirmTransaction(sig)),
-      // );
+      // this.logger.log('Scheduling settlement automation....');
+
+      // await this.settlementService.initiateSettlementAutomation({
+      //   interval: params.interval,
+      //   startTime: params.startTime,
+      //   endTime: params.endTime,
+      //   competition: poolAccounts[0].competitionKey,
+      //   poolAccounts: poolAccounts,
+      // });
+
+      // this.logger.log('Pool accounts: ', poolAccounts);
 
       return {
         competitionTxHash,

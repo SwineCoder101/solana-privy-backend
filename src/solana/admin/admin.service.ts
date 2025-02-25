@@ -146,16 +146,17 @@ export class AdminService implements OnModuleInit {
       recentBlockhash: blockhash,
     });
 
-    message.compiledInstructions.forEach((ix) => {
-      ix.accountKeyIndexes.forEach((accIdx) => {
-        if (message.isAccountSigner(accIdx)) {
-          console.log(
-            'Transaction wants this key to sign:',
-            message.staticAccountKeys[accIdx].toString(),
-          );
-        }
-      });
-    });
+    // NOTE: Uncomment this to see the transaction details
+    // message.compiledInstructions.forEach((ix) => {
+    //   ix.accountKeyIndexes.forEach((accIdx) => {
+    //     if (message.isAccountSigner(accIdx)) {
+    //       console.log(
+    //         'Transaction wants this key to sign:',
+    //         message.staticAccountKeys[accIdx].toString(),
+    //       );
+    //     }
+    //   });
+    // });
 
     const newTx = new web3.VersionedTransaction(
       newMessage.compileToV0Message(),

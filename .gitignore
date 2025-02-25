@@ -36,5 +36,6 @@ lerna-debug.log*
 
 # Env files
 .env
+.env.production
 
 gcs-local-dev-key.json

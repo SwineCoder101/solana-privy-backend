@@ -43,7 +43,7 @@ export class OrderService {
         params.competitionKey,
       );
 
-      const txHash = this.privyService.executeDelegatedActionWithWallet(
+      const txHash = await this.privyService.executeDelegatedActionWithWallet(
         delegatedWallet,
         transaction,
       );
@@ -70,4 +70,8 @@ export class OrderService {
 
     return signatures;
   }
+}
+
+export interface CancelBetResponse {
+  txHash: string;
 }
