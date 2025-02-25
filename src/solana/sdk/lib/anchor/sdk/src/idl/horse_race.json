@@ -1,5 +1,5 @@
 {
-    "address": "2Hw1SskuFzbdxFACL74E79AYymNZzmwEh2iymts3XU8D",
+    "address": "99ieFmE1u6Pws1Nneo2ksKvZjNsbDtiEbhGSfGUth3BN",
     "metadata": {
         "name": "horse_race",
         "version": "0.1.0",
@@ -24,6 +24,11 @@
             ],
             "accounts": [
                 {
+                    "name": "authority",
+                    "writable": true,
+                    "signer": true
+                },
+                {
                     "name": "user",
                     "writable": true,
                     "signer": true,
@@ -36,8 +41,106 @@
                     "writable": true
                 },
                 {
+                    "name": "pool_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "treasury",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "treasury_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
                     "name": "pool",
-                    "writable": true
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool.competition",
+                                "account": "Pool"
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool.pool_hash",
+                                "account": "Pool"
+                            }
+                        ]
+                    }
                 },
                 {
                     "name": "system_program",
@@ -100,14 +203,38 @@
                     }
                 },
                 {
+                    "name": "pool_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool"
+                            }
+                        ]
+                    }
+                },
+                {
                     "name": "pool",
                     "writable": true
                 },
                 {
                     "name": "system_program",
-                    "docs": [
-                        "System program"
-                    ],
                     "address": "11111111111111111111111111111111"
                 }
             ],
@@ -285,6 +412,33 @@
                     }
                 },
                 {
+                    "name": "pool_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool"
+                            }
+                        ]
+                    }
+                },
+                {
                     "name": "system_program",
                     "address": "11111111111111111111111111111111"
                 }
@@ -297,10 +451,6 @@
                 {
                     "name": "end_time",
                     "type": "u64"
-                },
-                {
-                    "name": "treasury",
-                    "type": "pubkey"
                 }
             ]
         },
@@ -392,6 +542,42 @@
             ],
             "accounts": [
                 {
+                    "name": "payer",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                },
+                {
+                    "name": "treasury_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
                     "name": "treasury",
                     "writable": true,
                     "pda": {
@@ -411,15 +597,6 @@
                             }
                         ]
                     }
-                },
-                {
-                    "name": "payer",
-                    "writable": true,
-                    "signer": true
-                },
-                {
-                    "name": "system_program",
-                    "address": "11111111111111111111111111111111"
                 }
             ],
             "args": [
@@ -457,7 +634,7 @@
                     "writable": true
                 },
                 {
-                    "name": "treasury_account",
+                    "name": "treasury_vault",
                     "writable": true,
                     "pda": {
                         "seeds": [
@@ -471,7 +648,13 @@
                                     115,
                                     117,
                                     114,
-                                    121
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
                                 ]
                             }
                         ]
@@ -516,20 +699,73 @@
                     "signer": true
                 },
                 {
+                    "name": "competition",
+                    "writable": true,
+                    "relations": [
+                        "pool"
+                    ]
+                },
+                {
                     "name": "pool",
                     "writable": true
                 },
                 {
-                    "name": "pool_treasury",
-                    "writable": true
-                },
-                {
-                    "name": "competition",
-                    "writable": true
+                    "name": "pool_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    111,
+                                    108,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "pool"
+                            }
+                        ]
+                    }
                 },
                 {
                     "name": "treasury",
                     "writable": true
+                },
+                {
+                    "name": "treasury_vault",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    116,
+                                    114,
+                                    101,
+                                    97,
+                                    115,
+                                    117,
+                                    114,
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
+                                ]
+                            }
+                        ]
+                    }
                 },
                 {
                     "name": "system_program",
@@ -685,7 +921,7 @@
                     "writable": true
                 },
                 {
-                    "name": "treasury_account",
+                    "name": "treasury_vault",
                     "writable": true,
                     "pda": {
                         "seeds": [
@@ -699,7 +935,13 @@
                                     115,
                                     117,
                                     114,
-                                    121
+                                    121,
+                                    95,
+                                    118,
+                                    97,
+                                    117,
+                                    108,
+                                    116
                                 ]
                             }
                         ]
@@ -864,6 +1106,19 @@
             ]
         },
         {
+            "name": "InsufficientFunds",
+            "discriminator": [
+                1,
+                162,
+                237,
+                78,
+                144,
+                121,
+                44,
+                184
+            ]
+        },
+        {
             "name": "PoolCreated",
             "discriminator": [
                 202,
@@ -887,6 +1142,19 @@
                 185,
                 90,
                 47
+            ]
+        },
+        {
+            "name": "Withdrawal",
+            "discriminator": [
+                6,
+                187,
+                215,
+                71,
+                92,
+                85,
+                90,
+                83
             ]
         }
     ],
@@ -928,16 +1196,16 @@
                         "type": "pubkey"
                     },
                     {
+                        "name": "pool_vault_key",
+                        "type": "pubkey"
+                    },
+                    {
                         "name": "status",
                         "type": {
                             "defined": {
                                 "name": "BetStatus"
                             }
                         }
-                    },
-                    {
-                        "name": "leverage",
-                        "type": "u64"
                     },
                     {
                         "name": "leverage_multiplier",
@@ -989,7 +1257,7 @@
                     },
                     {
                         "name": "cancelled_at",
-                        "type": "u64"
+                        "type": "i64"
                     }
                 ]
             }
@@ -1018,6 +1286,10 @@
                     {
                         "name": "upper_bound_price",
                         "type": "u64"
+                    },
+                    {
+                        "name": "pool_vault_key",
+                        "type": "pubkey"
                     },
                     {
                         "name": "pool_key",
@@ -1052,8 +1324,24 @@
                         "type": "pubkey"
                     },
                     {
+                        "name": "user_balance_before",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "user_balance_after",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "pool_balance_before",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "pool_balance_after",
+                        "type": "u64"
+                    },
+                    {
                         "name": "amount",
-                        "type": "i64"
+                        "type": "u64"
                     },
                     {
                         "name": "leverage_multiplier",
@@ -1147,7 +1435,7 @@
                 "kind": "struct",
                 "fields": [
                     {
-                        "name": "competition_key",
+                        "name": "competition",
                         "type": "pubkey"
                     },
                     {
@@ -1192,6 +1480,33 @@
             }
         },
         {
+            "name": "InsufficientFunds",
+            "docs": [
+                "Emitted when there aren’t enough funds in the treasury to withdraw."
+            ],
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "treasury_balance",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "amount_requested",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "recipient",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "treasury",
+                        "type": "pubkey"
+                    }
+                ]
+            }
+        },
+        {
             "name": "Pool",
             "type": {
                 "kind": "struct",
@@ -1201,7 +1516,7 @@
                         "type": "pubkey"
                     },
                     {
-                        "name": "competition_key",
+                        "name": "competition",
                         "type": "pubkey"
                     },
                     {
@@ -1213,8 +1528,16 @@
                         "type": "u64"
                     },
                     {
-                        "name": "treasury",
+                        "name": "bump",
+                        "type": "u8"
+                    },
+                    {
+                        "name": "vault_key",
                         "type": "pubkey"
+                    },
+                    {
+                        "name": "vault_bump",
+                        "type": "u8"
                     }
                 ]
             }
@@ -1229,7 +1552,11 @@
                         "type": "pubkey"
                     },
                     {
-                        "name": "competition_key",
+                        "name": "vault_key",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "competition",
                         "type": "pubkey"
                     },
                     {
@@ -1310,6 +1637,10 @@
                     },
                     {
                         "name": "pool_balance_before",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "pool_balance_after",
                         "type": "u64"
                     },
                     {
@@ -1467,6 +1798,14 @@
                         "type": "u64"
                     },
                     {
+                        "name": "vault_key",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "vault_bump",
+                        "type": "u8"
+                    },
+                    {
                         "name": "bump",
                         "type": "u8"
                     }
@@ -1502,6 +1841,29 @@
                     },
                     {
                         "name": "Full"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Withdrawal",
+            "docs": [
+                "Emitted after a successful withdrawal."
+            ],
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "amount",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "recipient",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "treasury",
+                        "type": "pubkey"
                     }
                 ]
             }

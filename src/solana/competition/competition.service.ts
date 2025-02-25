@@ -6,12 +6,21 @@ import {
 } from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
 import { AdminService } from '../admin/admin.service';
+import {
+  convertProgramToPoolData,
+  getPoolAccount,
+  PoolData,
+} from '@solana-sdk/states';
+import { SettlementService } from '../settlement/settlement.service';
 
 @Injectable()
 export class CompetitionService implements OnModuleInit {
   private readonly logger = new Logger(CompetitionService.name);
 
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly settlementService: SettlementService,
+  ) {}
   onModuleInit() {
     this.logger.log('Initializing competition service');
   }
@@ -32,10 +41,6 @@ export class CompetitionService implements OnModuleInit {
 
       const competitionTxHash =
         await this.adminService.signSendAndConfirmTransaction(competitionTx);
-
-      // const poolTxHashes = await Promise.all(
-      //   poolTxs.map((tx) => this.adminService.signAndSendTransaction(tx)),
-      // );
 
       const poolTxHashes = [];
       poolTxs.forEach(async (tx) => {
@@ -95,6 +100,7 @@ export class CompetitionService implements OnModuleInit {
       params.interval,
       params.startTime,
       params.endTime,
+      this.adminService.getAdminPublicKey(),
     );
 
     return transaction;

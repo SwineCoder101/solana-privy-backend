@@ -5,19 +5,6 @@ import { AdminService } from '../admin/admin.service';
 import { CompetitionService } from './competition.service';
 import { CreateCompetitionDto } from './dto/create-competition.dto';
 
-// class UpdateCompetitionDto {
-//   competitionKey: string;
-//   treasury: string;
-//   tokenA: string;
-//   priceFeedId: string;
-//   adminKeys: string[];
-//   houseCutFactor: number;
-//   minPayoutRatio: number;
-//   interval: number;
-//   startTime: number;
-//   endTime: number;
-// }
-
 @Controller('competition')
 export class CompetitionController {
   private readonly logger = new Logger(CompetitionController.name);

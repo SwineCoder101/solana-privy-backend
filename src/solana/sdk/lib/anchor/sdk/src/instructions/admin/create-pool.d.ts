@@ -5,4 +5,4 @@ export type CreatePoolResponse = {
     poolKey: PublicKey;
     ix: TransactionInstruction;
 };
-export declare function createPool(program: Program<HorseRace>, admin: PublicKey, competitionKey: PublicKey, startTime: number, endTime: number, treasury: PublicKey, poolHash: PublicKey): Promise<CreatePoolResponse>;
+export declare function createPool(program: Program<HorseRace>, admin: PublicKey, competitionKey: PublicKey, startTime: number, endTime: number, poolHash: PublicKey): Promise<CreatePoolResponse>;
