@@ -6,11 +6,6 @@ import {
 } from '@solana-sdk/instructions/admin/create-competition-with-pools';
 import { PublicKey } from '@solana/web3.js';
 import { AdminService } from '../admin/admin.service';
-import {
-  convertProgramToPoolData,
-  getPoolAccount,
-  PoolData,
-} from '@solana-sdk/states';
 import { SettlementService } from '../settlement/settlement.service';
 
 @Injectable()

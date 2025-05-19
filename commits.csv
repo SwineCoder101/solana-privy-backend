@@ -1,0 +1,87 @@
+commit,author_date,author_name,subject
+ab0e143ad10253f4d4f1c970ad65186b9c83ee2c,2025-02-25T19:24:38+08:00,Liam Faruq,Merge branch 'main' of https://github.com/talentgram/banana-backend
+62ecd2b3d96eb41f991e64daf28fd28651e38f11,2025-02-25T19:23:00+08:00,Liam Faruq,clean
+4505e224cb52cb042a09aca16155a7f8ec571230,2025-02-23T22:32:57+08:00,SwineCoder101,Merge pull request #28 from talentgram/27-update-backend-with-settlement-automation
+44ac8730dae12111ceadc628baaa1e24e0a48ead,2025-02-23T22:32:24+08:00,Liam Faruq,update-backend-build
+162d5a009012317da5a97b2d759f23d48996c001,2025-02-22T02:12:58+08:00,Liam Faruq,add-settlement-automation-with-cancellations
+4b13b7f16fcfebdaad4368a138cae7f4b6e50ef4,2025-02-16T15:07:14+08:00,Liam Faruq,update-orders
+0b8e51f607d9e96b585098badca3a10de0fb2f1d,2025-02-15T00:12:55+08:00,SwineCoder101,Merge pull request #26 from talentgram/update-sdk-for-bet-cancellations
+04a4dcdf2690ca8bcb5931b398f1fec1272236f8,2025-02-15T00:06:51+08:00,Liam Faruq,update-backend-with-cancellation-and-new-sdk
+e21fdbcba7f86717797a32f514719860ab4b48b9,2025-02-13T23:43:07+08:00,SwineCoder101,Merge pull request #25 from talentgram/add-websocket-price-stream-with-new-sdk-settlement
+f91ecfffe63a20c2d7e6023554ed703c9267994d,2025-02-13T23:41:39+08:00,Liam Faruq,enable-client-service-only
+da6c5aa97238303f145554564d53d872c5601487,2025-02-13T23:40:31+08:00,Liam Faruq,update-client-controller
+b610cf120e15404f4fa67dfe8004f1cecc041891,2025-02-13T22:49:30+08:00,Liam Faruq,add-price-stream
+013df7a87540a152994cfef251250540f0182e35,2025-02-13T21:06:16+08:00,Liam Faruq,update-backend-sdk
+4d6013cc8506c548d27944edf7855e5142122ff0,2025-02-10T15:09:19+08:00,SwineCoder101,Merge pull request #24 from talentgram/fix-sdk-with-competition-service
+63322865fb8976e6974fddb026298ef1dcee0b8b,2025-02-10T15:07:04+08:00,Liam Faruq,add-more-logs
+f9c1525d59a4bca8c024c404774a22885a3d1b4a,2025-02-10T15:01:10+08:00,Liam Faruq,update-backend
+18aa25f0342712456f736f335eff326ba6d48c65,2025-02-10T01:28:21+08:00,SwineCoder101,Merge pull request #23 from talentgram/22-add-create-competition-and-settlement-services-in-the-backend-34
+7366987424739f4a55c52acf8443128e0a5ce205,2025-02-10T01:26:34+08:00,Liam Faruq,add-settlement
+3ed1d04b38add1998859445af231c77d41c07810,2025-02-10T01:20:16+08:00,Liam Faruq,wire-admin-service-to-competition-creation
+601d5e777a0a1f845ba0148f7c1c4e9e173e334d,2025-02-10T00:45:14+08:00,Liam Faruq,add-admin-service
+b3516de2f34005f67fc70f327deac48bd2f844a8,2025-02-10T00:33:41+08:00,Liam Faruq,update-sdk
+f469f0565e03b5036b0d6726aa68c9cce509c491,2025-02-07T21:52:52Z,wehavelanded,update
+e32f13c61b7f91066b4ce776da4eec1a08363bf9,2025-02-07T21:49:38Z,wehavelanded,push
+28ebed0274777ffe0ad76fe00ff08c05fb7493c9,2025-02-07T21:40:12Z,wehavelanded,latest 5
+d6c7daea2da8b00118355dca49756800548df622,2025-02-04T14:36:42+08:00,Liam Faruq,make-minor-changes-for-frontend-integrationl
+896acea509eba2fa289b9cf2544947ca3077eb29,2025-02-04T13:24:00+08:00,Liam Faruq,add-healthcheck-controller
+8306e10af19f367c8c4d4902785e842724313136,2025-02-04T01:57:31Z,wehavelanded,remove delete from public
+5047a3a6e43aa50d6590fcf14969f01c176d373e,2025-02-04T00:47:57Z,wehavelanded,add referral by code
+1b855c3924e30d193bd5be14c69653422dcc59cb,2025-02-03T23:51:18Z,wehavelanded, add referrerInviteLink
+9aeaacdfdb3263203cbe266bfa388a79f774920a,2025-02-03T22:48:21Z,wehavelanded,changes
+c28495eaffbf73f4e5eea4d640f366b2d4873543,2025-02-03T11:36:47Z,wehavelanded,add
+8be044f93f5f8c775a2884ff31884a47d088535b,2025-02-03T10:27:23Z,wehavelanded,add
+178e048de290215c3a8e3924773e233b85f2385d,2025-02-03T09:01:49Z,wehavelanded,added polling
+ded2a32db2409d46c580ae3981b910c2f506f88a,2025-02-03T09:01:39Z,wehavelanded,add polling
+1a7fa892d3b03b309f42213a690fcbea25e3f039,2025-02-03T08:45:50Z,wehavelanded,test
+8ac88d721b51e093a27994dbc908ba8dce343fc8,2025-02-03T08:18:59Z,wehavelanded,Merge pull request #21 from talentgram/build/ws
+3dff88a1eb3866d953d0c221f5b41c0ffabe341e,2025-02-03T08:17:45Z,wehavelanded,test
+9a17f10f53fb4356f1c0a4354a60ab860b912e6c,2025-02-02T21:43:01Z,wehavelanded,Merge pull request #20 from talentgram/build/ws
+dadf4b70c76a2091b9b9406c90ae134937056323,2025-02-02T21:42:08Z,wehavelanded,ws update
+a16697f03f3c8615412d4b9bda8d76e5a737747c,2025-02-02T18:05:13+08:00,SwineCoder101,Merge pull request #19 from talentgram/18-add-create-bet-order-transaction-execution
+b8c0cafbfe4ef0a358bdf98d95b8335d9ce0e459,2025-02-02T18:03:05+08:00,Liam Faruq,fix-betting-order-execution
+f3ddffd4ab1f40fed39b76a0037982c3d6cd0cff,2025-02-01T23:33:41+08:00,Liam Faruq,update-lib-solana-sdk-and-lint
+4b818c6cc5d897b3170a8a5414dcc62e5a6f3e7e,2025-01-28T22:17:45Z,Zoltan Giber,dist/src/main -> dist/main
+b17f12cd49abf62b02f967a5be17ce0ec58a74a4,2025-01-28T22:07:22Z,Zoltan Giber,single step build
+1c7445046d1ee8c22c6e256ef0b2ca69d0f57611,2025-01-28T21:12:15Z,wehavelanded,Merge pull request #17 from talentgram/build/latest
+40cdf1a124e521d1accf96c30430710a15dae8e6,2025-01-28T21:11:27Z,wehavelanded,test
+cb7754baa8e1a67f85383d06845c52e51b79fe2b,2025-01-28T21:10:58Z,wehavelanded,test
+5d2b1ec2650ced879f329ebee13e86e03801b536,2025-01-28T21:10:34Z,wehavelanded,teast
+2129e594a696b8292023cddcb149bb9b4cfab198,2025-01-28T17:24:45Z,wehavelanded,Merge pull request #16 from talentgram/build/fix-leaderboard
+0f2725c969f7cfa82ed974de82095c802f6a5808,2025-01-28T17:23:56Z,wehavelanded,fix websocket
+4a5be6f5daa221e6fbad8d2e1a9c12df76f6bcb6,2025-01-28T16:34:03Z,wehavelanded,Merge pull request #15 from talentgram/build/fix-leaderboard
+e713aae3700888d37753e3bf1e519b0253a40019,2025-01-28T16:28:35Z,wehavelanded,fix:leaderboard issues
+52af6d9b714a2a0b2c9564954c884bd80dd265dd,2025-01-28T22:18:46+08:00,SwineCoder101,Merge pull request #14 from talentgram/fix-backend-build
+23e1c0684a25e8041413160aef2a92291b4e4d47,2025-01-28T22:16:52+08:00,Liam Faruq,clean-build
+a21d8ac8208d83a942cc30ed73c6a9a4fdc2cbaa,2025-01-28T22:10:00+08:00,Liam Faruq,add-service-impl-and-fix-backend-build
+fa7e8902734ec9bdf5c17a5b88a43cac3a8ad970,2025-01-27T22:46:46+08:00,SwineCoder101,Merge pull request #13 from talentgram/9-add-controller-endpoints-for-bet-orders-and-competitions
+619eb3e06c0203e96ff71298d1900b250a68454f,2025-01-27T22:44:47+08:00,Liam Faruq,update-tsconfig
+4f1004cf02d183bffbba6364eb2d51d3ee572286,2025-01-27T22:38:14+08:00,Liam Faruq,add-controller-with-pipeline-fix
+3b30e736468362d52990640772cadb1327f71f11,2025-01-27T21:59:55+08:00,Liam Faruq,Merge branch 'main' of https://github.com/talentgram/banana-backend
+9436a5a5530dd1b35cade49609b94d877fc0ce8c,2025-01-27T21:59:36+08:00,Liam Faruq,add-solana-service-integration-with-competition-and-order
+27eb2f9dd763f85347930966e695beddbd3662e0,2025-01-27T13:18:58Z,wehavelanded,Merge pull request #12 from talentgram/build/test
+5e906bcdccde9dd1c13645e49e670a891acae989,2025-01-27T13:18:26Z,wehavelanded,fix remove websocket for now
+15d728cd387def7375325cc3e170f1ff465db7fc,2025-01-27T11:35:13Z,wehavelanded,Merge pull request #11 from talentgram/fix/websocket
+9b21e35fa6424dfe1dafabccffa017e136c9f061,2025-01-27T11:34:57Z,wehavelanded,fix user created websocket
+95d6476da93336cd99702c9083f10b20dc6b6bdd,2025-01-27T18:17:02+08:00,SwineCoder101,Merge pull request #10 from talentgram/8-add-privy-delegation-service-to-backend-with-wallet-signingconfirmation-feature
+668d611da62fcee227a6f108a5dfacddc1171f91,2025-01-27T18:15:21+08:00,Liam Faruq,add-privy-delegate-actions
+88e1a7476b816949b221f87b26b5ad58a0cc9cab,2025-01-26T22:08:33Z,wehavelanded,test docker
+b73a7e4ae0e9844e956af5a269632c5440c0bb66,2025-01-26T22:02:31Z,wehavelanded,test docker
+d4a53322513b39d74e51e18f7a493bbba169b3e6,2025-01-26T21:59:26Z,wehavelanded,docker
+b6e34651c7197402c7ca2bad69e64fd38c3475d8,2025-01-26T18:49:23Z,wehavelanded,Merge pull request #6 from talentgram/new_user_apis
+d741651caaa760278ee15c648fe391eaff74834a,2025-01-27T00:16:31+05:30,sarthakmohapatra,package.json plus module fix
+1d50006a1df326e9febf60257b7cf7e46c6453ef,2025-01-26T18:34:25Z,wehavelanded,revert docker
+e5dca4aa781ed8d2bd6a8e66d7d516557ca1bdb3,2025-01-26T18:31:12Z,wehavelanded,fix docker
+bbb2c2ff4f98342edefa5b39bda90bee276ea926,2025-01-26T18:06:29Z,wehavelanded,Merge pull request #5 from talentgram/new_user_apis
+39e27375e99aec016d627d5941a1599d5fc6faa7,2025-01-26T23:33:13+05:30,sarthakmohapatra,Leaderboard
+4ca0b85cf5fcd20588d2293a2a43ce57b40dc1e4,2025-01-26T22:28:59+05:30,sarthakmohapatra,websockets, top referrer
+b07b02e33d503df8b4b656cd9fb19fb44f21572e,2025-01-25T20:45:28Z,wehavelanded,fix remove 2 node ref
+0f50c953cd942b71b2a6a2640ba5c78c484bb4c2,2025-01-25T19:57:01Z,wehavelanded,testing docker file
+7a7cf93705db1344452809bfb4ea8c91917cf70b,2025-01-25T13:33:23Z,Zoltan Giber,prisma fix
+35e2166aab755d3c3b65faea597bcf10f0715bd6,2025-01-25T13:04:07Z,Zoltan G.,Merge pull request #4 from talentgram/smaller-image
+a0057cc67f81e758a2e642c0dacc207e00fc8fc8,2025-01-25T13:03:35Z,Zoltan Giber,prisma
+51f0f9eb0e524645d5b6e2eb0b2435d20e10707d,2025-01-25T12:54:03Z,Zoltan G.,Merge pull request #3 from talentgram/smaller-image
+c2a6b449676ab2230e46c8c42af81127e886b0ab,2025-01-25T12:52:52Z,Zoltan Giber,revert to using full image, prisma complains (to be fixed later)
+25e9bb79b825ba852fbe439fb0898ca1832c40cc,2025-01-25T11:22:03Z,Zoltan G.,Merge pull request #2 from talentgram/smaller-image
+8ae423936fc37dde1026ce60c4ec076cccdbc9b0,2025-01-25T11:21:25Z,Zoltan Giber,clearer separation of build / runtime items
+018502c7815152a20dbe39363c8d64b53bd68c59,2025-01-14T19:32:24Z,wehavelanded,init
